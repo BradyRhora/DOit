@@ -1,0 +1,18 @@
+<div id="header">
+    <h3>{{text}}</h3>
+    <button id="logout" class="btn btn-primary">Logout</button>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#logout').click(function() {
+            $.post('/logout', function(data) {
+                if (data == "OK") {
+                    window.location.href = '/login';
+                }
+            }).fail(function(err) {
+                alert(err.statusText + ' Error: ' + err.responseText);
+            });
+        });
+    });
+</script>

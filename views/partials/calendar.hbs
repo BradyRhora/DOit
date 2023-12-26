@@ -1,0 +1,76 @@
+<table id="calendar">
+  <tbody id="calendar-body">
+    <tr id="weekdays">
+      <th>Monday</th>
+      <th>Tuesday</th>
+      <th>Wednesday</th>
+      <th>Thursday</th>
+      <th>Friday</th>
+      <th>Saturday</th>
+      <th>Sunday</th>
+    </tr>
+  </tbody>
+</table>
+
+<div id="cal-fade-out"></div>
+
+<div id="button-menu" class="col">
+  <button id="return-today" class="btn btn-primary">Today</button>
+  <button id="new-task" class="btn btn-primary">New Task</button>
+</div>
+
+<div id="new-task-modal" class="modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">New Task</h5>
+      </div>
+      <div class="modal-body">
+        <form id="task-form">
+          <div class="form-group row">
+            <label for="task-name" class="col-sm-2 col-form-label">Name</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="task-name" name="task-name" placeholder="Task Name" required>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="task-color" class="col-sm-2 col-form-label">Color</label>
+            <div class="col-sm-10">
+              <input type="color" class="form-control" id="task-color" name="task-color" placeholder="Task Color" value="#F00000">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="task-date" class="col-sm-2 col-form-label">Date</label>
+            <div class="col-sm-10">
+              <input type="date" class="form-control" id="task-date" name="task-date" placeholder="Task Date" required>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="task-time" class="col-sm-2 col-form-label">Time</label>
+            <div class="col-sm-10">
+              <input type="time" class="form-control" id="task-time" name="task-time" placeholder="Task Time">
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="task-notes" class="col-sm-2 col-form-label">Notes</label>
+            <div class="col-sm-10">
+              <textarea class="form-control" id="task-notes" name="task-notes" placeholder="Notes"></textarea>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <div>
+          <button id="modal-delete" type="button" class="btn btn-danger">Delete</button>
+        </div>
+        <div>
+          <button id="modal-submit" type="submit" form="task-form" class="btn btn-primary">Save Task</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+<script src="/js/calendar.js"></script>
