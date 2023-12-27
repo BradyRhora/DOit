@@ -34,10 +34,9 @@ app.use(express.static('public'));
 
 
 // Routes
-const userRoutes = require('./routes/user')(app);
-const taskRoutes = require('./routes/task')(app);
+require('./routes/user')(app);
+require('./routes/task')(app);
 
-// Define routes
 app.get('/', verifyToken, (req, res) => {
     res.render('home');
 });
