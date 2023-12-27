@@ -28,7 +28,7 @@ app.engine('.hbs', exphbs.engine({
 }));
 
 // Set views directory
-app.set('views', __dirname + '\\views');
+app.set('views', __dirname + '/views');
 app.set('view engine', '.hbs');
 
 // Set up body parsing middleware
