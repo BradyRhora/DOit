@@ -29,6 +29,22 @@ body {
 
 }
 
+#about {
+    margin-top: 30px;
+    text-align:center;
+}
+
+#about > p {
+    text-align:left;
+}
+
+#about > img {
+    border: 8px solid var(--fg);
+    border-radius: 30px;
+    box-shadow: 0 80px 80px 30px rgba(0,0,0,0.5);
+    width: 80%;
+}
+
 #calendar {
     width: 100%;
     font-size: 1rem;

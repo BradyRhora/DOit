@@ -8,7 +8,7 @@ const secret = env.SECRET;
 const User = require('../models/user');
 
 module.exports = function(app) {
-    app.get('register', (req, res) => {
+    app.get('/register', (req, res) => {
         res.render('register');
     });
 
