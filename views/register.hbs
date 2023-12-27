@@ -33,7 +33,7 @@
                 alert('Passwords do not match');
             } else {
                 // put the password in the body not the url 
-                $.post('/register',
+                $.post('/api/register',
                 $('#registrationForm').serialize(), function(data) {
                     if (data == "Created") {
                         window.location.href = '/login';

@@ -2,14 +2,14 @@ const verifyToken = require('../auth')
 const Task = require('../models/task');
 
 module.exports = function (app) {
-    app.get('/task/:id', verifyToken, (req, res) => {
+    app.get('/api/task/:id', verifyToken, (req, res) => {
         //get Task by id
         Task.findOne({_id: req.params.id, userID: req.userId}).then(task => {
             res.send(task);
         });
     });
     
-    app.post('/task/:id', verifyToken, (req, res) => {
+    app.post('/api/task/:id', verifyToken, (req, res) => {
         let taskData = req.body;
         let name = taskData.name;
         let color = taskData.color;
@@ -30,7 +30,7 @@ module.exports = function (app) {
             
     });
     
-    app.get('/tasks', verifyToken, (req, res) => {
+    app.get('/api/tasks', verifyToken, (req, res) => {
         let start = req.query.start;
         let end = req.query.end;
     
@@ -39,7 +39,7 @@ module.exports = function (app) {
         });
     });
     
-    app.post('/task', verifyToken, (req, res) => {
+    app.post('/api/task', verifyToken, (req, res) => {
         try {
             let taskData = req.body;
             let name = taskData.name;
@@ -65,7 +65,7 @@ module.exports = function (app) {
         
     });
     
-    app.delete('/task/:id', verifyToken, (req, res) => {
+    app.delete('/api/task/:id', verifyToken, (req, res) => {
         Task.deleteOne({_id: req.params.id, userID: req.userId}).then(() => {
             res.sendStatus(200);
         }).catch(err => {

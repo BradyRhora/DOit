@@ -66,7 +66,7 @@ class Calendar {
         let start = days[0].date.toISOString();
         let end = days[days.length - 1].date.toISOString();
 
-        $.get("/tasks?start=" + start + "&end=" + end, function(data) {    
+        $.get("/api/tasks?start=" + start + "&end=" + end, function(data) {    
             // clear existing tasks
             for (var day of days) {
                 day.element.children[1].innerHTML = "";
@@ -178,7 +178,7 @@ function setFontSize(calendar) {
 function taskClickHandler(event) {
     event.stopPropagation();
     let id = event.currentTarget.getAttribute("data-id");
-    $.get("/task/" + id, function(task) {
+    $.get("/api/task/" + id, function(task) {
         $("#task-form").attr("data-id", id);
 
         $("#task-name").val(task.name);
@@ -218,7 +218,7 @@ function deleteTaskClickHandler(event) {
     let id = $("#task-form").attr("data-id");
 
     $.ajax({
-        url: "/task/" + id,
+        url: "/api/task/" + id,
         type: "DELETE",
         success: function() {
             $("#new-task-modal").modal("hide");
@@ -277,7 +277,7 @@ $(document).ready(function() {
             id = "/" + e.currentTarget.getAttribute("data-id");
         } 
 
-        $.post("/task" + id, task, function() {
+        $.post("/api/task" + id, task, function() {
             $("#new-task-modal").modal("hide");
 
             //clear form contents

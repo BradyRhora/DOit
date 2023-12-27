@@ -8,11 +8,11 @@ const secret = env.SECRET;
 const User = require('../models/user');
 
 module.exports = function(app) {
-    app.get('/register', (req, res) => {
+    app.get('register', (req, res) => {
         res.render('register');
     });
 
-    app.post('/register', async (req, res) => {
+    app.post('/api/register', async (req, res) => {
         const email = req.body.email;
         const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
         
@@ -37,7 +37,7 @@ module.exports = function(app) {
         res.render('login');
     });
 
-    app.post('/login', async (req, res) => {
+    app.post('/api/login', async (req, res) => {
         User.findOne({ email: req.body.email }).then(user => {
             bcrypt.compare(req.body.password, user.hash).then(passwordIsValid => {
                 if (!passwordIsValid) return res.status(401).send('Invalid password');
