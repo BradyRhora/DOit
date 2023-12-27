@@ -103,7 +103,7 @@ body {
     }
 }
 
-#calendar #weekdays div {
+#calendar #weekdays {
     text-align: center;
     text-overflow: ellipsis;
 }

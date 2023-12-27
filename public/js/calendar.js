@@ -84,9 +84,17 @@ class Calendar {
                 let task_elem = document.createElement("div");
 
                 task_elem.setAttribute("data-id", task._id);
+                task_elem.setAttribute("data-name", task.name);
+                task_elem.setAttribute("data-color", task.colorHex);
+                task_elem.setAttribute("data-date", moment(date).format('yyyy-MM-DD'));
+                task_elem.setAttribute("data-time", moment(date).format('HH:mm'));
+                task_elem.setAttribute("data-notes", task.notes);
+
                 task_elem.setAttribute("data-toggle", "tooltip");
                 task_elem.setAttribute("data-placement", "top");
                 task_elem.setAttribute("title", task.notes);
+
+
 
                 task_elem.classList.add("task");
                 if (pastDate) task_elem.classList.add("past");
@@ -178,20 +186,24 @@ function setFontSize(calendar) {
 function taskClickHandler(event) {
     event.stopPropagation();
     let id = event.currentTarget.getAttribute("data-id");
-    $.get("/api/task/" + id, function(task) {
-        $("#task-form").attr("data-id", id);
+    let name = event.currentTarget.getAttribute("data-name");
+    let color = event.currentTarget.getAttribute("data-color");
+    let date = event.currentTarget.getAttribute("data-date");
+    let time = event.currentTarget.getAttribute("data-time");
+    let notes = event.currentTarget.getAttribute("data-notes");
 
-        $("#task-name").val(task.name);
-        $("#task-color").val(task.colorHex);
-        $("#task-date").val(moment(task.dueDateTime).format('yyyy-MM-DD'));
-        $("#task-time").val(moment(task.dueDateTime).format('HH:mm'));
-        $("#task-notes").val(task.notes);
-        $("#new-task-modal").modal("show");
+    $("#task-form").attr("data-id", id);
 
-        $("#modal-submit").html("Save Changes");
-        $("#new-task-modal .modal-title").html("Edit Task");
-        $("#new-task-modal #modal-delete").css("display", "block");
-    });
+    $("#task-name").val(name);
+    $("#task-color").val(color);
+    $("#task-date").val(date);
+    $("#task-time").val(time);
+    $("#task-notes").val(notes);
+    $("#new-task-modal").modal("show");
+
+    $("#modal-submit").html("Save Changes");
+    $("#new-task-modal .modal-title").html("Edit Task");
+    $("#new-task-modal #modal-delete").css("display", "block");
 }
 
 function dayClickHandler(event) {

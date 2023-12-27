@@ -9,6 +9,12 @@ const limiter = rateLimit({
     max: 100,                // limit to 100 requests
     message: 'Too many requests, please try again later.'
   });
+
+const apiLimiter = rateLimit({
+    windowMs: 10 * 60 * 1000, // 10 minutes
+    max: 1000,                // limit to 1000 requests
+    message: 'Too many API requests, please try again later.'
+  });
   
 // Middleware to verify token
 function verifyToken(req, res, next) {
@@ -24,10 +30,16 @@ function verifyToken(req, res, next) {
         if (err) return res.status(500).send('Failed to authenticate token');
         req.userId = decoded.id;
 
-        // Apply rate limit
-        limiter(req, res, () => {
-            next();
-        });
+        // Apply rate limits
+        if (req.path.startsWith('/api/')) {
+            apiLimiter(req, res, () => {
+                next();
+            });
+        } else {
+            limiter(req, res, () => {
+                next();
+            });
+        }
     });
 }
 
