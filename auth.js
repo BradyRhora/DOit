@@ -9,7 +9,7 @@ const limiter = rateLimit({
     max: 100,                // limit to 100 requests
     message: 'Too many requests, please try again later.'
   });
-
+  
 // Middleware to verify token
 function verifyToken(req, res, next) {
     if (req.cookies.token === undefined) {
