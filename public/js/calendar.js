@@ -227,7 +227,7 @@ function deleteTaskClickHandler(event) {
     });
 }
 
-var calendar;
+var calendar, currentDay;
 $(document).ready(function() {
     calendar = new Calendar();
 
@@ -298,8 +298,6 @@ $(document).ready(function() {
 
         if (taskContainer.scrollHeight > taskContainer.clientHeight) return;
 
-        //event.preventDefault();
-
         let scrollUp = event.originalEvent.deltaY < 0;
         let weekOffset = scrollUp ? -1 : 1;
         calendar.currentOffset += weekOffset;
@@ -307,4 +305,13 @@ $(document).ready(function() {
 
         $("#return-today").css("opacity", calendar.currentOffset == 0 ?  "0" : "1");
     });
+
+    let currentDay = new Date();
+    setInterval(function() {
+        let day = new Date();
+        if (day.getDate() != currentDay.getDate()) {
+            currentDay = day;
+            calendar.initCalendar(calendar.currentOffset);
+        }
+    }, 1000 * 10);
 });
