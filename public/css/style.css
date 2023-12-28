@@ -139,12 +139,28 @@ body {
     background-color: #f0f0f0;
 }
 
-#new-task-modal .form-group {
+.modal .form-group {
     padding: 5px;
+}
+
+#new-task-modal .row {
+    align-items: center;
 }
 
 #new-task-modal .modal-footer {
     justify-content: space-between;
+}
+
+#new-group-modal > .modal-dialog{
+    max-width:400px;
+}
+
+.group-color-preview {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: solid 1px grey;
+    margin-right: 5px;
 }
 
 .modal-backdrop {

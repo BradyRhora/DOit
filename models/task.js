@@ -17,6 +17,9 @@ const taskSchema = new mongoose.Schema({
         type: Date,
         required: true
     },
+    groupID: {
+        type: String
+    },
     notes: {
         type: String
     }

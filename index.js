@@ -4,6 +4,8 @@ const mongoose = require('mongoose');
 const env = require('dotenv').config().parsed;
 const verifyToken = require('./auth');
 
+const Group = require('./models/group');
+
 // Connect to the database
 mongoose.connect(`mongodb+srv://${env.DB_USER}:${env.DB_PASS}@cluster0.cbbazzd.mongodb.net/?retryWrites=true&w=majority`)
     .then(() => console.log('Connected to the database'))
@@ -36,9 +38,21 @@ app.use(express.static('public'));
 // Routes
 require('./routes/user')(app);
 require('./routes/task')(app);
+require('./routes/group')(app);
 
 app.get('/', verifyToken, (req, res) => {
-    res.render('home');
+    Group.find({ userID: req.userId }).then(groups => {
+        groups = groups.map(group => {
+            return {
+                id: group._id,
+                name: group.name,
+                color: group.colorHex
+            };
+        });
+        res.render('home', { groups: groups });
+    }).catch(error => {
+        res.status(500).send({ error: error });
+    });
 });
 
 // Start the server

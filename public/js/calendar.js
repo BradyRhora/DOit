@@ -200,6 +200,7 @@ function taskClickHandler(event) {
     $("#task-time").val(time);
     $("#task-notes").val(notes);
     $("#new-task-modal").modal("show");
+    $('#task-name').focus();
 
     $("#modal-submit").html("Save Changes");
     $("#new-task-modal .modal-title").html("Edit Task");
@@ -220,6 +221,7 @@ function dayClickHandler(event) {
     $('#task-color').val('#'+Math.floor(Math.random()*16777215).toString(16));
     $('#task-time').val(moment().format('HH:mm'));
     $("#new-task-modal").modal("show");
+    $('#task-name').focus();
     $("#task-date").val(moment(date).format('yyyy-MM-DD'));
     $("#modal-submit").html("Save Task");
     $("#new-task-modal .modal-title").html("New Task");
@@ -243,6 +245,7 @@ var calendar, currentDay;
 $(document).ready(function() {
     calendar = new Calendar();
 
+    // event handlers
     $(document).on("click", ".cal-day", dayClickHandler);
     $(document).on("click", "#new-task", dayClickHandler);
     $(document).on("click", ".task", taskClickHandler);
@@ -251,6 +254,23 @@ $(document).ready(function() {
         calendar.currentOffset = 0;
         calendar.initCalendar();
         $("#return-today").css("opacity", "0");
+    });
+    $(document).on("change", "#task-group-select", function() {
+        if (this.value == "new") {
+            let modal = $("#new-group-modal");
+            modal.modal("show");
+            let backdrop = $(".modal-backdrop").last();
+            
+            $("#group-color").val($("#task-color").val());
+            backdrop.css("z-index", 1800);
+            modal.css("z-index", 1801)
+            this.value = "";
+        } else if (this.value == "") {
+            $("#task-color").attr("disabled", false);
+        } else {
+            $("#task-color").attr("disabled", true);
+            $("#task-color").val($("#task-group-select option:selected").attr("color"));
+        }
     });
 
     $('[data-toggle="tooltip"]').tooltip()
@@ -261,11 +281,7 @@ $(document).ready(function() {
         setFontSize(calendar);
     });
 
-    // init modal
-    $("#task-modal").modal({
-        fadeDuration: 100
-    });
-
+    // form submits
     $("#task-form").submit(function(e) {
         e.preventDefault();
 
@@ -302,6 +318,33 @@ $(document).ready(function() {
         });
         
     });
+
+    $("#group-form").submit(function(e) {
+        e.preventDefault();
+
+        let name = $("#group-name").val();
+        let color = $("#group-color").val();
+
+        let group = {
+            name: name,
+            color: color
+        }
+        
+        $.post("/api/group", group, function(response) {
+            $("#new-group-modal").modal("hide");
+
+            //clear form contents
+            $("#group-name").val("");
+            $("#group-color").val("#000000");
+            
+            // append BEFORE "new group" option
+            $("#task-group-select option:nth-last-child(2)").before(`
+                <option color="${color}" value="${response._id}">${name}</option>
+            `);
+        });
+        
+    });
+    
 
     // scrolling events
     $(document).on("wheel", ".cal-day", function(event) {
