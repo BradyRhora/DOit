@@ -28,13 +28,13 @@
       <div class="modal-body">
         <form id="task-form">
           <div class="form-group row">
-            <label for="task-name" class="col-sm-2 col-form-label">Name</label>
+            <label for="task-name" class="col-sm-2 col-form-label">Name*</label>
             <div class="col-sm-10">
               <input type="text" class="form-control" id="task-name" name="task-name" placeholder="Task Name" required>
             </div>
           </div>
           <div class="form-group row" style="align-items:center">
-            <label for="task-color" class="col-sm-2 col-form-label">Color</label>
+            <label for="task-color" class="col-sm-2 col-form-label">Color*</label>
             <div class="col-sm-10">
               <div class="row">
                 <div class="col-5">
@@ -55,13 +55,13 @@
             </div>
           </div>
           <div class="form-group row">
-            <label for="task-date" class="col-sm-2 col-form-label">Date</label>
+            <label for="task-date" class="col-sm-2 col-form-label">Date*</label>
             <div class="col-sm-10">
               <input type="date" class="form-control" id="task-date" name="task-date" placeholder="Task Date" required>
             </div>
           </div>
           <div class="form-group row">
-            <label for="task-time" class="col-sm-2 col-form-label">Time</label>
+            <label for="task-time" class="col-sm-2 col-form-label">Time*</label>
             <div class="col-sm-10">
               <input type="time" class="form-control" id="task-time" name="task-time" placeholder="Task Time">
             </div>
@@ -73,6 +73,7 @@
             </div>
           </div>
         </form>
+        <p style="font-size:0.8rem"><i>* = required</i></p>
       </div>
       <div class="modal-footer">
         <div>
@@ -106,6 +107,7 @@
             <div class="col-sm-10">
               <input type="color" class="form-control" id="group-color" name="group-color" placeholder="Group Color" value="#F00000">
             </div>
+          </div>
         </form>
       </div>
       <div class="modal-footer">

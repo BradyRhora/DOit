@@ -113,10 +113,7 @@ class Calendar {
                 let g = parseInt(task.colorHex.substr(3,2), 16);
                 let b = parseInt(task.colorHex.substr(5,2), 16);
                 
-                if ((r*0.299 + g*0.587 + b*0.114) > 140)
-                    task_elem.style.color = '#000000';
-                else
-                    task_elem.style.color = '#FFFFFF';
+                task_elem.style.color = ((r*0.299 + g*0.587 + b*0.114) > 140) ? '#000000' : '#FFFFFF';
 
                 day.children[1].appendChild(task_elem);
             }

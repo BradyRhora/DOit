@@ -1,0 +1,23 @@
+<div id="upcoming-tasks">
+    <h5>Upcoming</h5>
+    <div id="upcoming-task-container">
+    {{#if tasks.length}}
+        {{#each tasks}}
+        <div class="upcoming-task" style="color:{{this.colorFG}};background-color:{{this.colorHex}}">
+            <div class="upcoming-task-name">
+                <p><b>{{this.name}}</b></p>
+            </div>
+            <div class="upcoming-task-date-time">
+                <p>{{this.date}} - {{this.time}}</p>
+            </div>
+            <div class="upcoming-task-notes">
+                <p>{{this.notes}}</p>
+            </div>
+        </div>
+        {{/each}}
+    {{else}}
+        <p>No upcoming tasks.</p>
+    {{/if}} 
+
+    </div>
+</div>

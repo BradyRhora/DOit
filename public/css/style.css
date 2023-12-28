@@ -113,7 +113,7 @@ body {
 }
 
 #cal-fade-out {
-    position:fixed;
+    position:absolute;
     background: linear-gradient(to bottom, rgba(var(--bg-vals), 0), rgba(var(--bg-vals), 1) 50%, rgba(var(--bg-vals), 1));
     height:250px;
     width:100%;
@@ -211,4 +211,21 @@ body {
 
 #new-task {
     position: relative;
+}
+
+#upcoming-tasks {
+    position: relative;
+    margin-top: 30px;
+}
+
+#upcoming-task-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.upcoming-task {
+    border-radius: 7px;
+    padding: 5px;
+    margin:10px;
 }
