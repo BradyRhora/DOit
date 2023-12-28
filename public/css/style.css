@@ -210,6 +210,10 @@ body {
     color: var(--bs-primary);
 }
 
+#button-menu button {
+    height: 50px;
+}
+
 #button-menu i:hover {
     opacity: 0.8;
 }
