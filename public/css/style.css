@@ -201,6 +201,7 @@ body {
     z-index: 200;
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 
 #button-menu i {

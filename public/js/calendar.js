@@ -212,17 +212,26 @@ function taskClickHandler(event) {
 
 function dayClickHandler(event) {
     var date;
-    if (event.currentTarget.id == "new-task") 
+    if (event.currentTarget.id == "new-task")
         date = new Date();
-    else
+    else 
         date = calendar.getDateByDayNumber(event.currentTarget.children[0].innerHTML);
+    
 
     $("#task-form").removeAttr("data-id");
     
     $('#task-name').val('');
     $('#task-notes').val('');        
     $('#task-color').val('#'+Math.floor(Math.random()*16777215).toString(16));
-    $('#task-time').val(moment().format('HH:mm'));
+
+    // round to nearest half hour
+    if (moment(date).minutes() < 30) {
+        $('#task-time').val(moment(date).format('HH:30'))
+    } else {
+        date.setHours(date.getHours() + 1);
+        $('#task-time').val(moment(date).format('HH:00'))
+    }
+    
     $("#new-task-modal").modal("show");
     $('#task-name').focus();
     $("#task-date").val(moment(date).format('yyyy-MM-DD'));
@@ -276,7 +285,7 @@ $(document).ready(function() {
         }
     });
 
-    $('[data-toggle="tooltip"]').tooltip()
+    $('[data-toggle="tooltip"]').tooltip();
 
     // on resize
     setFontSize(calendar);
@@ -351,6 +360,8 @@ $(document).ready(function() {
 
     // scrolling events
     $(document).on("wheel", ".cal-day", function(event) {
+        event.preventDefault();
+        
         let element = event.currentTarget;
         let taskContainer = element.children[1];
 
@@ -359,7 +370,6 @@ $(document).ready(function() {
         let scrollUp = event.originalEvent.deltaY < 0;
         let weekOffset = scrollUp ? -1 : 1;
         calendar.changeOffset(weekOffset);
-
     });
 
     let currentDay = new Date();
