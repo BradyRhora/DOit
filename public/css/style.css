@@ -21,6 +21,17 @@ body {
     background-color: var(--bg);
     display: flex;
     flex-direction: column;
+    box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+    body {
+        /*padding: 0px;*/
+    }
+
+    .cal-day .task-container {
+        height: 120px !important;
+    }
 }
 
 #header{
@@ -82,13 +93,15 @@ body {
     cursor: pointer;
     padding: 3px;
     overflow: scroll;
+}
 
+.hide-scroll {
     /* Hide scrollbar for IE, Edge and Firefox */
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
 }
 
-.cal-day .task-container::-webkit-scrollbar {
+.hide-scroll::-webkit-scrollbar {
     display: none;  /* Safari and Chrome */
 }
 
@@ -97,6 +110,14 @@ body {
     width: 100%;
     margin-bottom:0px;
     border-bottom: 1px solid var(--fg);
+    text-align: center;
+}
+
+@media (max-width: 700px) {
+    .cal-day h4 {
+        height: 2.8rem;
+    }
+
 }
 
 @media (hover: hover) {
@@ -207,7 +228,7 @@ body {
 #button-menu i {
     cursor: pointer;
     margin: 5px;
-    font-size: 5rem;
+    font-size: 3rem;
     color: var(--bs-primary);
 }
 
@@ -243,7 +264,7 @@ body {
 #upcoming-task-container{
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    overflow-x: auto;
 }
 
 .upcoming-task {

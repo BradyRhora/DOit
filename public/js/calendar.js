@@ -44,6 +44,8 @@ class Calendar {
                 // create task container
                 var task_container = document.createElement("div");
                 task_container.classList.add("task-container");
+                task_container.classList.add('hide-scroll')
+
 
                 // Apply text
                 let date = currDate.getDate();
@@ -203,7 +205,6 @@ function taskClickHandler(event) {
     $("#task-time").val(time);
     $("#task-notes").val(notes);
     $("#new-task-modal").modal("show");
-    $('#task-name').focus();
 
     $("#modal-submit").html("Save Changes");
     $("#new-task-modal .modal-title").html("Edit Task");
@@ -361,7 +362,7 @@ $(document).ready(function() {
     // scrolling events
     $(document).on("wheel", ".cal-day", function(event) {
         event.preventDefault();
-        
+
         let element = event.currentTarget;
         let taskContainer = element.children[1];
 
