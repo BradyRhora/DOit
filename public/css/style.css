@@ -1,16 +1,18 @@
 :root{
     --cal-font-size: 1.5rem;
-
     --bg-vals: 39, 38, 43;
     
     --bg: rgb(var(--bg-vals));
     --hover-bg: #4a4a4a;
+
     --past-day-bg: #3a3a3a;
     --past-day-hover-bg: #3f3f3f;
+
     --current-day-bg: #a7b477;
     --current-day-hover-bg: #b5c780;
 
     --fg: #f0f0f0;
+    --sec: rgb(57, 56, 63);
 }
 
 body {
@@ -196,8 +198,20 @@ body {
 }
 
 #button-menu {
+    z-index: 200;
     display: flex;
     justify-content: space-between;
+}
+
+#button-menu i {
+    cursor: pointer;
+    margin: 5px;
+    font-size: 5rem;
+    color: var(--bs-primary);
+}
+
+#button-menu i:hover {
+    opacity: 0.8;
 }
 
 #return-today {
@@ -216,6 +230,9 @@ body {
 #upcoming-tasks {
     position: relative;
     margin-top: 30px;
+    background-color : var(--sec);
+    border-radius: 7px;
+    padding: 15px;
 }
 
 #upcoming-task-container{

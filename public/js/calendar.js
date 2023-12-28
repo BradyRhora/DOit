@@ -139,6 +139,12 @@ class Calendar {
         }
     }
 
+    changeOffset(weekOffset) {        
+        calendar.currentOffset += weekOffset;
+        calendar.initCalendar(calendar.currentOffset);
+        $("#return-today").css("opacity", calendar.currentOffset == 0 ?  "0" : "1");
+    }
+
     // 1 = Shortest (M), 2 = Medium (Mon), 3 = Long (Monday)    
     setHeaderMode(mode) {
         let headers = [
@@ -352,10 +358,8 @@ $(document).ready(function() {
 
         let scrollUp = event.originalEvent.deltaY < 0;
         let weekOffset = scrollUp ? -1 : 1;
-        calendar.currentOffset += weekOffset;
-        calendar.initCalendar(calendar.currentOffset);
+        calendar.changeOffset(weekOffset);
 
-        $("#return-today").css("opacity", calendar.currentOffset == 0 ?  "0" : "1");
     });
 
     let currentDay = new Date();
