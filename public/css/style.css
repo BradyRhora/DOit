@@ -210,6 +210,17 @@ body {
     margin-bottom:0px;
 }
 
+.task .task-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    flex-wrap: nowrap;
+}
+
+.task .task-footer > * {
+    margin: 0px;
+}
+
 .past {
     opacity:0.5;
 }
@@ -225,11 +236,23 @@ body {
     align-items: center;
 }
 
-#button-menu i {
+#button-menu #offset-controller i {
     cursor: pointer;
     margin: 5px;
     font-size: 3rem;
     color: var(--bs-primary);
+}
+
+#button-menu #new-task i {
+    font-size:2rem;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+#button-menu #new-task {
+    padding:0px;
+    border-radius: 50%;
+    aspect-ratio: 1/1;
 }
 
 #button-menu button {

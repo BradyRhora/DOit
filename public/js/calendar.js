@@ -105,9 +105,16 @@ class Calendar {
                 if (date.getMinutes() != 0) time_format += ":mm";
                 time_format += " A";
 
+                let note_elem = "<i></i>";
+                if (task.notes.length > 0)
+                    note_elem = `<i class="bi bi-card-text"></i>`;
+
                 task_elem.innerHTML = `
-                    <b>${task.name}</b><br>
-                    <p>${moment(date).format(time_format)}</p>
+                    <b>${task.name}</b>
+                    <div class="task-footer">
+                        <p>${moment(date).format(time_format)}</p>
+                        ${note_elem}
+                    </div>
                 `;
                 task_elem.style.backgroundColor = task.colorHex;
 
