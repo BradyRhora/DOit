@@ -22,6 +22,14 @@ const taskSchema = new mongoose.Schema({
     },
     notes: {
         type: String
+    },
+    notified: {
+        type: Boolean,
+        default: false
+    },
+    completed: {
+        type: Boolean,
+        default: false
     }
 });
 

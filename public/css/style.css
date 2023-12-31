@@ -25,12 +25,13 @@ body {
 }
 
 @media (max-width: 768px) {
-    body {
-        /*padding: 0px;*/
-    }
-
     .cal-day .task-container {
         height: 120px !important;
+    }
+
+    .upcoming-task {
+        margin:2px !important;
+        padding: 5px !important;
     }
 }
 
@@ -288,10 +289,13 @@ body {
     display: flex;
     flex-direction: row;
     overflow-x: auto;
+    flex-wrap:wrap;
 }
 
 .upcoming-task {
     border-radius: 7px;
-    padding: 5px;
+    padding: 8px;
     margin:10px;
+    max-height: 300px;
+    max-width: 300px;
 }

@@ -16,6 +16,7 @@ module.exports = function (app) {
         let date = taskData.date;
         let time = taskData.time;
         let notes = taskData.notes;
+        let completed = taskData.completed;
     
         // update existing task
         Task.findOneAndUpdate({_id: req.params.id}, {
@@ -23,6 +24,8 @@ module.exports = function (app) {
             userID: req.userId,
             dueDateTime: new Date(date + " " + time),
             colorHex: color,
+            completed: completed,
+            notified: false,
             notes: notes
         }, {new: true}).then(() => {
             res.sendStatus(200);

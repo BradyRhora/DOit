@@ -1,17 +1,27 @@
 const express = require('express');
 const exphbs = require('express-handlebars');
-const mongoose = require('mongoose');
 const env = require('dotenv').config().parsed;
 const verifyToken = require('./auth');
 
 const Group = require('./models/group');
 const Task = require('./models/task');
 
+
+const mongoose = require('mongoose');
 // Connect to the database
 mongoose.connect(`mongodb+srv://${env.DB_USER}:${env.DB_PASS}@cluster0.cbbazzd.mongodb.net/?retryWrites=true&w=majority`)
-    .then(() => console.log('Connected to the database'))
+    .then(() => console.log('Connected to MongoDB database'))
     .catch(error => console.error('Error connecting to the database:', error));
 
+// Set up web push  
+const webpush = require('web-push'); 
+const NotificationSubscription = require('./models/notification_subscription');
+
+webpush.setVapidDetails(
+    'mailto:brady0423@gmail.com',
+    env.VAPID_PUBLIC,
+    env.VAPID_PRIVATE
+);
 
 const app = express();
 
@@ -28,8 +38,8 @@ app.set('views', __dirname + '/views');
 app.set('view engine', '.hbs');
 
 // Set up body parsing middleware
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
 app.use(require('cookie-parser')())
 
 // Set up static files middleware
@@ -40,6 +50,23 @@ app.use(express.static('public'));
 require('./routes/user')(app);
 require('./routes/task')(app);
 require('./routes/group')(app);
+
+app.post('/subscribe', verifyToken, (req, res) => {
+    console.log("[DEBUG] User subscribing: " + req.userId);
+    const subscription = req.body;
+    NotificationSubscription.create({
+        endpoint: subscription.endpoint,
+        keys: {
+            p256dh: subscription.keys.p256dh,
+            auth: subscription.keys.auth
+        },
+        user: req.userId
+    }).then(() => {
+        res.status(201).send();
+    }).catch(error => {
+        res.status(500).send({ error: error });
+    });
+});
 
 app.get('/', verifyToken, (req, res) => {
     Group.find({ userID: req.userId }).then(groups => {
@@ -74,12 +101,56 @@ app.get('/', verifyToken, (req, res) => {
                 };
             });
 
-            res.render('home', { groups: groups, upcomingTasks: tasks });
+            res.render('home', { groups: groups, upcomingTasks: tasks, publicVapidKey: env.VAPID_PUBLIC });
         });
     }).catch(error => {
         res.status(500).send({ error: error });
     });
 });
+
+function checkNotifications() {
+    let utcDate = new Date();
+    let futureDate = new Date(new Date().setTime(utcDate.getTime() + 1000 * 60 * 60)); // 1 hour from now
+    Task.find({ $or: [{ notified: false }, { notified: { $exists: false } }], dueDateTime: { $gt: utcDate, $lte: futureDate } })
+    .lean().sort('dueDateTime')
+    .then(tasks => {
+        tasks.forEach(task => {
+            NotificationSubscription.find({ user: task.userID }).then(subscriptions => {
+                subscriptions.forEach(subscription => {
+                    const payload = JSON.stringify({
+                        title: `${task.name} - ${task.dueDateTime.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' })}`,
+                        body: task.notes,
+                        icon: 'android-chrome-256x256.png',
+                        id: task._id,
+                    });
+
+                    webpush.sendNotification(subscription, payload).catch(error => {
+                        if (error.statusCode === 410) {
+                            NotificationSubscription.deleteOne({ endpoint: subscription.endpoint });
+                        } else {
+                            console.error(error.body);
+                            console.error(error.stack);
+                        }
+                    }).then(() => {
+                        Task.findOneAndUpdate({ _id: task._id }, { notified: true }, { new: true });
+                    });
+                });
+            }).catch(error => {
+                console.error(error.stack);
+            });
+        });
+    }).catch(error => {
+        console.error(error.stack);
+    });
+}
+
+// Start task notifier
+setTimeout(() => {
+    checkNotifications();
+    setInterval(() => {
+        checkNotifications();
+    }, 1000 * 60);
+}, 1000 * 3);
 
 // Start the server
 const port = env.PORT;

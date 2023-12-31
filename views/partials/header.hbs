@@ -1,10 +1,17 @@
 <div id="header">
     <h3>{{text}}</h3>
-    <button id="logout" class="btn btn-primary">Logout</button>
+    <div id="header-button-menu">
+        <button id="allow-push-notifications" class="btn btn-primary" onclick="allowPushNotifications()">
+            <i id="notification-allowed-icon" class="bi bi-bell"></i>
+        </button>
+        <button id="logout" class="btn btn-primary">Logout</button>
+    </div>
 </div>
 
 <script>
+    var publicVapidKey;
     $(document).ready(function() {
+        publicVapidKey = '{{publicVapidKey}}';
         $('#logout').click(function() {
             $.post('/logout', function(data) {
                 if (data == "OK") {
@@ -16,3 +23,5 @@
         });
     });
 </script>
+
+<script src="/js/notifications.js"></script>

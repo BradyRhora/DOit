@@ -10,6 +10,7 @@ class Calendar {
     initCalendar(weekOffset = 0) {
         this.weeks = []
         let weekRow = this.calendar_body.children[0];
+        $('.task').tooltip('dispose');
         this.calendar_body.innerHTML = "";
         this.calendar_body.appendChild(weekRow);
 
@@ -20,21 +21,24 @@ class Calendar {
     }
 
     buildCalendar(weekOffset) {
+        let WEEK_COUNT = 3;
+        let DAYS_PER_WEEK = 7;
+
         let today = new Date();
         let startOfWeek = getStartOfWeek(today);
-        startOfWeek.setDate(startOfWeek.getDate() + (weekOffset * 7));
+        startOfWeek.setDate(startOfWeek.getDate() + (weekOffset * DAYS_PER_WEEK));
 
-        for (var w = 0; w < 3; w++) {
+        for (var w = 0; w < WEEK_COUNT; w++) {
             let days = [];
             let new_week = document.createElement("tr");
-            for (var i = 0; i < 7; i++) {
+            for (var i = 0; i < DAYS_PER_WEEK; i++) {
                 // Create the day elements
                 let day_elem = document.createElement("td");
                 day_elem.classList.add("cal-day");
                 
                 // Get date offsets
                 var currDate = new Date(startOfWeek);
-                currDate.setDate(currDate.getDate() + i + (w * 7));
+                currDate.setDate(currDate.getDate() + i + (w * DAYS_PER_WEEK));
 
                 days.push({"element":day_elem, "date":currDate});
 
@@ -56,6 +60,21 @@ class Calendar {
                 new_week.appendChild(day_elem);
                 day_elem.appendChild(day_num_text);
                 day_elem.appendChild(task_container);
+
+                // Scroll event
+                day_elem.addEventListener("wheel", function(event) {
+                    event.preventDefault();
+
+                    let element = event.currentTarget;
+                    let taskContainer = element.children[1];
+
+                    if (taskContainer.scrollHeight > taskContainer.clientHeight) return;
+
+                    let scrollUp = event.deltaY < 0;
+                    let weekOffset = scrollUp ? -1 : 1;
+                    calendar.changeOffset(weekOffset);
+                }, { passive: false });
+
                 this.calendar_body.appendChild(new_week);
             }
             this.weeks.push(days);
@@ -92,9 +111,12 @@ class Calendar {
                 task_elem.setAttribute("data-time", moment(date).format('HH:mm'));
                 task_elem.setAttribute("data-notes", task.notes);
 
-                task_elem.setAttribute("data-toggle", "tooltip");
-                task_elem.setAttribute("data-placement", "top");
-                task_elem.setAttribute("title", task.notes);
+                if (task.notes != "") {
+                    task_elem.setAttribute("data-toggle", "tooltip");
+                    task_elem.setAttribute("data-bs-placement", "bottom");
+                    task_elem.setAttribute("title", task.notes);
+                    $(task_elem).tooltip({trigger: 'hover'});
+                }
 
 
 
@@ -264,6 +286,8 @@ function deleteTaskClickHandler(event) {
 var calendar, currentDay;
 $(document).ready(function() {
     calendar = new Calendar();
+    // initialization functions
+    setFontSize(calendar);
 
     // event handlers
     $(document).on("click", ".cal-day", dayClickHandler);
@@ -293,10 +317,8 @@ $(document).ready(function() {
         }
     });
 
-    $('[data-toggle="tooltip"]').tooltip();
 
     // on resize
-    setFontSize(calendar);
     $(window).resize(function() {
         setFontSize(calendar);
     });
@@ -365,21 +387,7 @@ $(document).ready(function() {
         
     });
     
-
-    // scrolling events
-    $(document).on("wheel", ".cal-day", function(event) {
-        event.preventDefault();
-
-        let element = event.currentTarget;
-        let taskContainer = element.children[1];
-
-        if (taskContainer.scrollHeight > taskContainer.clientHeight) return;
-
-        let scrollUp = event.originalEvent.deltaY < 0;
-        let weekOffset = scrollUp ? -1 : 1;
-        calendar.changeOffset(weekOffset);
-    });
-
+    // Auto update calendar
     let currentDay = new Date();
     setInterval(function() {
         let day = new Date();
