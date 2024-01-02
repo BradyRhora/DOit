@@ -110,6 +110,27 @@ class Calendar {
                 task_elem.setAttribute("data-date", moment(date).format('yyyy-MM-DD'));
                 task_elem.setAttribute("data-time", moment(date).format('HH:mm'));
                 task_elem.setAttribute("data-notes", task.notes);
+                task_elem.setAttribute("data-group", task.groupID);
+
+                task_elem.setAttribute("data-repeats", task.repeats);
+                if (task.repeats) {
+                    task_elem.setAttribute("data-repeat-unit", task.repeatOptions.unit);
+                    task_elem.setAttribute("data-repeat-number", task.repeatOptions.number);
+                    if (task.repeatOptions.originalDueDateTime != undefined) {
+                        task_elem.setAttribute("data-original-date", moment(task.repeatOptions.originalDueDateTime).format('yyyy-MM-DD'));
+                        task_elem.setAttribute("data-orginal-time", moment(task.repeatOptions.originalDueDateTime).format('HH:mm'));
+                    } else {
+                        task_elem.setAttribute("data-original-date", moment(date).format('yyyy-MM-DD'));
+                        task_elem.setAttribute("data-orginal-time", moment(date).format('HH:mm'));
+                    }
+                    task_elem.setAttribute("data-repeat-ends", task.repeatOptions.endDate != null);
+                    if (task.repeatOptions.endDate != null) {
+                        task_elem.setAttribute("data-repeat-end", moment(task.repeatOptions.endDate).format('yyyy-MM-DD'));
+                    }
+                }
+
+                
+
 
                 if (task.notes != "") {
                     task_elem.setAttribute("data-toggle", "tooltip");
@@ -195,6 +216,8 @@ class Calendar {
     }
 }
 
+// Helper Functions
+
 function getStartOfWeek(date) {
     let day = new Date(date);
     while (day.getDay() != 1) {
@@ -217,6 +240,8 @@ function setFontSize(calendar) {
     }
 }
 
+// Event Handlers
+
 function taskClickHandler(event) {
     event.stopPropagation();
     let id = event.currentTarget.getAttribute("data-id");
@@ -225,6 +250,7 @@ function taskClickHandler(event) {
     let date = event.currentTarget.getAttribute("data-date");
     let time = event.currentTarget.getAttribute("data-time");
     let notes = event.currentTarget.getAttribute("data-notes");
+    let repeats = event.currentTarget.getAttribute("data-repeats");
 
     $("#task-form").attr("data-id", id);
 
@@ -233,6 +259,42 @@ function taskClickHandler(event) {
     $("#task-date").val(date);
     $("#task-time").val(time);
     $("#task-notes").val(notes);
+
+    if ((event.currentTarget.getAttribute("data-group") != undefined 
+            || event.currentTarget.getAttribute("data-group") != null) 
+                && event.currentTarget.getAttribute("data-group") != "undefined") {
+        $("#task-group-select").val(event.currentTarget.getAttribute("data-group"));
+        $("#task-color").attr("disabled", true);
+    }
+    else {
+        $("#task-group-select").val("");
+        $("#task-color").attr("disabled", false);
+    }
+
+    if (repeats == "true") {
+        $('#task-date').val(event.currentTarget.getAttribute("data-original-date"));
+        $('#task-time').val(event.currentTarget.getAttribute("data-orginal-time"));
+        $("#task-repeating-checkbox").prop("checked", true);
+        $("#task-repeating-number").val(event.currentTarget.getAttribute("data-repeat-number"));
+        $("#task-repeating-unit").val(event.currentTarget.getAttribute("data-repeat-unit"));
+        $("#task-repeating-end-checkbox").prop("checked", event.currentTarget.getAttribute("data-repeat-ends") == "true");
+        $("#task-repeating-end-option").val("on-date");
+        $("#task-repeating-end-date").val(event.currentTarget.getAttribute("data-repeat-end"));
+        $("#task-repeating-end-number").val(event.currentTarget.getAttribute("data-repeat-end"));
+    } else {
+        $("#task-repeating-checkbox").prop("checked", false);
+        $("#task-repeating-number").val(1);
+        $("#task-repeating-unit").val("days");
+        $("#task-repeating-end-checkbox").prop("checked", false);
+        $("#task-repeating-end-option").val("after");
+        $("#task-repeating-end-date").val("");
+        $("#task-repeating-end-number").val(1);
+    }
+
+    toggleRepeatingOptions();
+    toggleEndingOptions();
+    toggleEndType();
+
     $("#new-task-modal").modal("show");
 
     $("#modal-submit").html("Save Changes");
@@ -240,7 +302,9 @@ function taskClickHandler(event) {
     $("#new-task-modal #modal-delete").css("display", "block");
 }
 
-function dayClickHandler(event) {
+function dayClickHandler(event) {    
+    clearTaskForm();
+
     var date;
     if (event.currentTarget.id == "new-task")
         date = new Date();
@@ -249,9 +313,7 @@ function dayClickHandler(event) {
     
 
     $("#task-form").removeAttr("data-id");
-    
-    $('#task-name').val('');
-    $('#task-notes').val('');        
+         
     $('#task-color').val('#'+Math.floor(Math.random()*16777215).toString(16));
 
     // round to nearest half hour
@@ -261,6 +323,8 @@ function dayClickHandler(event) {
         date.setHours(date.getHours() + 1);
         $('#task-time').val(moment(date).format('HH:00'))
     }
+
+    $("#task-group-select").val("");
     
     $("#new-task-modal").modal("show");
     $('#task-name').focus();
@@ -282,6 +346,84 @@ function deleteTaskClickHandler(event) {
         }
     });
 }
+
+// Modal Functions
+function verifyNumInput(elem) {
+    elem = $(elem);
+    let val = Number(elem.val());
+    let min = Number(elem.attr("min"));
+    let max = Number(elem.attr("max"));
+    if (val < min) {
+        elem.val(min);
+    } else if (val > max) {
+        elem.val(max);
+    }
+}
+
+function toggleRepeatingOptions() {
+    let repeating = $("#task-repeating-checkbox").is(":checked");
+    let options = $("#task-repeating-options-container");
+    let endOptions = $("#task-repeating-end-container");
+
+    if (repeating) {
+        options.css("display", "flex");
+        endOptions.css("display", "block");
+    } else {
+        options.css("display", "none");
+        endOptions.css("display", "none");
+    }
+}
+
+function toggleEndingOptions() {
+    let end = $("#task-repeating-end-checkbox").is(":checked");
+    let options = $("#task-repeating-end-options-container");
+
+    if (end) {
+        options.css("display", "flex");
+    } else {
+        options.css("display", "none");
+    }
+
+}
+
+function toggleEndType() {
+    let type = $("#task-repeating-end-option").val();
+
+    let datePicker = $("#task-repeating-end-date");
+    let number = $("#task-repeating-end-number-container");
+
+    if (type == "on-date") {
+        datePicker.css("display", "block");
+        datePicker.attr("required", true);
+        number.css("display", "none");
+    } else {
+        datePicker.css("display", "none");
+        datePicker.attr("required", false);
+        number.css("display", "flex");
+    }
+}
+
+function clearTaskForm() {
+    //clear form contents
+    $("#task-name").val("");
+    $("#task-notes").val("");
+
+    // Reset repeating options
+    $("#task-repeating-checkbox").prop("checked", false);
+    $("#task-repeating-number").val(1);
+    $("#task-repeating-unit").val("days");
+
+    // Reset end options
+    $("#task-repeating-end-checkbox").prop("checked", false);
+    $("#task-repeating-end-option").val("after");
+    $("#task-repeating-end-date").val("");
+    $("#task-repeating-end-number").val(1);
+
+    toggleRepeatingOptions();
+    toggleEndingOptions();
+    toggleEndType();
+}
+
 
 var calendar, currentDay;
 $(document).ready(function() {
@@ -332,15 +474,49 @@ $(document).ready(function() {
         let date = $("#task-date").val();
         let time = $("#task-time").val();
         let notes = $("#task-notes").val();
+        let repeating = $("#task-repeating-checkbox").is(":checked");
+
 
         let task = {
             name: name,
             color: color,
             date: date,
             time: time,
-            notes: notes
+            notes: notes,
+            repeating: repeating
         }
-        
+
+        if ($("#task-group-select").val() != "") {
+            task.groupID = $("#task-group-select").val();
+        }
+
+        if (repeating) {
+            let repeatNumber = $("#task-repeating-number").val();
+            let repeatUnit = $("#task-repeating-unit").val();
+            let ending = $("#task-repeating-end-checkbox").is(":checked");
+
+            task.repeatOptions = {
+                number: repeatNumber,
+                unit: repeatUnit
+            }
+
+            if (ending) {
+                let endType = $("#task-repeating-end-option").val();
+                let endDate;
+
+                if (endType == "on-date") {
+                    endDate = $("#task-repeating-end-date").val();
+                } else {
+                    let times = $("#task-repeating-end-number").val();
+                    times *= repeatNumber;
+
+                    endDate = moment(date).add(times, repeatUnit).format("YYYY-MM-DD");
+                }
+
+                task.repeatOptions.endDate = endDate;
+            }
+        }
+
         let id = "";
         if (e.currentTarget.getAttribute("data-id")) {
             // update existing task
@@ -350,10 +526,7 @@ $(document).ready(function() {
         $.post("/api/task" + id, task, function() {
             $("#new-task-modal").modal("hide");
 
-            //clear form contents
-            $("#task-name").val("");
-            $("#task-notes").val("");
-            // sleep briefly
+            // sleep briefly to allow for database update
             setTimeout(function() {
                 calendar.loadTasks();
             }, 100);

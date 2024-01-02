@@ -1,5 +1,20 @@
 const mongoose = require('mongoose');
 
+const repeatOptionsSchema = new mongoose.Schema({
+    unit: {
+        type: String,
+        enum: ['days', 'weeks', 'months', 'years'],
+        required: true
+    },
+    number: {
+        type: Number,
+        required: true
+    }, 
+    endDate: {
+        type: Date
+    }
+});
+
 const taskSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -30,6 +45,13 @@ const taskSchema = new mongoose.Schema({
     completed: {
         type: Boolean,
         default: false
+    },
+    repeats: {
+        type: Boolean,
+        default: false
+    },
+    repeatOptions: {
+        type: repeatOptionsSchema
     }
 });
 
