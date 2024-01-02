@@ -25,6 +25,18 @@ body {
 }
 
 @media (max-width: 768px) {
+    #icon-text h3 {
+        font-size: 1rem !important;
+    }
+    
+    #icon-text img {
+        padding: 10px !important;
+    }
+
+    #header-button-menu > * {
+        font-size:0.75rem !important;
+    }
+
     .cal-day .task-container {
         height: 120px !important;
     }
@@ -33,6 +45,10 @@ body {
         margin:2px !important;
         padding: 5px !important;
     }
+
+    #cal-fade-out {
+        height: 80px !important;
+    }
 }
 
 #header{
@@ -40,9 +56,23 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-
 }
 
+#icon-text {
+    display: flex;
+    align-items: center;
+}
+
+#icon-text img {
+    width: 50px;
+    padding:5px;
+    cursor: pointer;
+}
+
+#icon-text h3 {
+    margin-bottom:0px;
+}
+/*
 #about {
     margin-top: 30px;
     text-align:center;
@@ -51,7 +81,7 @@ body {
 #about > p {
     text-align:left;
 }
-
+*/
 #about > img {
     border: 8px solid var(--fg);
     border-radius: 30px;
@@ -114,7 +144,7 @@ body {
     text-align: center;
 }
 
-@media (max-width: 700px) {
+@media (max-width: 768px) {
     .cal-day h4 {
         height: 2.8rem;
     }
@@ -167,8 +197,24 @@ body {
     padding: 5px;
 }
 
+.form-control:disabled {
+    opacity: 0.7;
+}
+
 #new-task-modal .row {
     align-items: center;
+}
+
+#task-repeating-options, #task-repeating-end-options {
+    display: flex;
+}
+
+#task-repeating-options > *, #task-repeating-end-options > *, #task-repeating-end-number-container > * {
+    margin-top:auto;
+    margin-bottom:auto;
+    margin-left: 0px;
+    margin-right: 10px;
+    width:auto;
 }
 
 #new-task-modal .modal-footer {
@@ -298,4 +344,5 @@ body {
     margin:10px;
     max-height: 300px;
     max-width: 300px;
+    cursor: pointer;
 }
