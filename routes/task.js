@@ -37,6 +37,12 @@ module.exports = function (app) {
     app.get('/api/tasks', verifyToken, (req, res) => {
         let start = req.query.start;
         let end = req.query.end;
+
+        // set time to 11:59
+        start = new Date(start);
+        end = new Date(end);
+        start.setHours(0, 0, 0, 0);
+        end.setHours(23, 59, 59, 999);
     
         // get tasks between start and end
         let promise_1 = Task.find({dueDateTime: {$gte: start, $lte: end}, userID: req.userId}).sort({dueDateTime: 1});

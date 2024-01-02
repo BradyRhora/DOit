@@ -79,7 +79,7 @@ app.get('/', verifyToken, (req, res) => {
         });
 
         let start = new Date();
-        let end = new Date(Date.now() + 8 * 24 * 60 * 60 * 1000)
+        let end = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
     
         // get tasks between start and end
         let promise_1 = Task.find({dueDateTime: {$gte: start, $lte: end}, userID: req.userId}).sort({dueDateTime: 1});
