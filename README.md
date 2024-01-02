@@ -4,7 +4,7 @@ This is a small web application to track tasks and important dates and easily vi
 
 Built using Express, Node.js, and MongoDB.
 
-Currently accessible on [my website](https://doit.bjsa.space).
+Currently accessible on [my website](https://doit.bradysbytes.xyz).
 
 ## Features
 

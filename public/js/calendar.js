@@ -152,7 +152,7 @@ class Calendar {
                 task_icon_container.classList.add("task-icons");
 
                 if (task.repeats)
-                    task_icon_container.innerHTML += `<i data-toggle="tooltip" data-bs-placement"bottom" title="Repeats every ${task.repeatOptions.number} ${task.repeatOptions.unit}" class="bi bi-arrow-repeat task-repeat-icon"></i>`;
+                    task_icon_container.innerHTML += `<i data-toggle="tooltip" data-bs-placement="bottom" title="Repeats every ${task.repeatOptions.number} ${task.repeatOptions.unit}" class="bi bi-arrow-repeat task-repeat-icon"></i>`;
                 if (task.notes.length > 0)
                     task_icon_container.innerHTML += `<i class="bi bi-card-text"></i>`;
 

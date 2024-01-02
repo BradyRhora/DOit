@@ -58,6 +58,24 @@ body {
     margin-bottom: 20px;
 }
 
+#header-warning {
+    background-color: yellow;
+    border-radius: 5px;
+    color:red;
+    display: flex;
+    padding:5px;
+    margin-left:10px;
+}
+
+#header-warning > * {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+#header-warning > p {
+    text-decoration: dotted underline;
+}
+
 #icon-text {
     display: flex;
     align-items: center;

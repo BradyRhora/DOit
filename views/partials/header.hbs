@@ -2,6 +2,10 @@
     <div id="icon-text">
         <a href="/"><img src="/android-chrome-192x192.png"/></a>
         <h3>{{text}}</h3>
+        <div id="header-warning">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <p id="header-warning-message" data-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="This domain will no longer be accessible in February. Please switch to <a href='doit.bradysbytes.xyz'>doit.bradysbytes.xyz</a>!">Alert!</p>
+        </div>
     </div>
     <div id="header-button-menu">
         <button id="allow-push-notifications" class="btn btn-primary" onclick="allowPushNotifications()">
@@ -15,6 +19,12 @@
     var publicVapidKey;
     $(document).ready(function() {
         publicVapidKey = '{{publicVapidKey}}';
+
+        $('#header-warning-message').tooltip({
+            html: true,
+            delay: {"hide": 1000}
+        });
+
         $('#logout').click(function() {
             $.post('/logout', function(data) {
                 if (data == "OK") {
