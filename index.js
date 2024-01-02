@@ -78,8 +78,8 @@ app.get('/', verifyToken, (req, res) => {
             };
         });
 
-        // get upcoming tasks (within 7 days)
-        Task.find({ userID: req.userId, dueDateTime: { $lte: new Date(Date.now() + 8 * 24 * 60 * 60 * 1000) } })
+        // get upcoming tasks (within 7 (8) days)
+        Task.find({ userID: req.userId, dueDateTime: { $gte:new Date(),$lte: new Date(Date.now() + 8 * 24 * 60 * 60 * 1000) } })
         .lean().sort('dueDateTime')
         .then(tasks => {
             tasks = tasks.map(task => {                

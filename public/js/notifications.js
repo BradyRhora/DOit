@@ -1,21 +1,19 @@
 function setNotificationButtonState(state) {
     let icon = $('#notification-allowed-icon');
     let button = $('#allow-push-notifications');
+    
+    button.attr('data-toggle', 'tooltip');
+    button.tooltip({trigger: 'hover'});
+
     if (state === 'granted') {
         icon.removeClass('bi-bell').addClass('bi-bell-fill');
-        button.attr('data-toggle', 'tooltip');
-        button.attr('data-bs-original-title', '');
-        button.tooltip({trigger: 'hover'});
+        button.attr('data-bs-original-title', 'Use your browser settings to disable notifications.');
     } else if (state === 'denied') {
         icon.removeClass('bi-bell-fill').addClass('bi-bell-slash-fill');
-        button.attr('data-toggle', 'tooltip');
         button.attr('data-bs-original-title', 'Subscribe to notifications.');
-        button.tooltip({trigger: 'hover'});
     } else {
         icon.removeClass('bi-bell-slash-fill').addClass('bi-bell');
-        button.attr('data-toggle', 'tooltip');
         button.attr('data-bs-original-title', 'Subscribe to notifications.');
-        button.tooltip({trigger: 'hover'});
     }
 }
 
