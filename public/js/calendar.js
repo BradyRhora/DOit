@@ -148,17 +148,24 @@ class Calendar {
                 if (date.getMinutes() != 0) time_format += ":mm";
                 time_format += " A";
 
-                let note_elem = "<i></i>";
+                let task_icon_container = document.createElement("div");
+                task_icon_container.classList.add("task-icons");
+
+                if (task.repeats)
+                    task_icon_container.innerHTML += `<i data-toggle="tooltip" data-bs-placement"bottom" title="Repeats every ${task.repeatOptions.number} ${task.repeatOptions.unit}" class="bi bi-arrow-repeat task-repeat-icon"></i>`;
                 if (task.notes.length > 0)
-                    note_elem = `<i class="bi bi-card-text"></i>`;
+                    task_icon_container.innerHTML += `<i class="bi bi-card-text"></i>`;
 
                 task_elem.innerHTML = `
                     <b>${task.name}</b>
                     <div class="task-footer">
                         <p>${moment(date).format(time_format)}</p>
-                        ${note_elem}
+                        ${task_icon_container.outerHTML}
                     </div>
                 `;
+
+
+
                 task_elem.style.backgroundColor = task.colorHex;
 
                 let r = parseInt(task.colorHex.substr(1,2), 16);
@@ -169,6 +176,8 @@ class Calendar {
 
                 day.children[1].appendChild(task_elem);
             }
+            
+            $(".task-repeat-icon").tooltip({trigger: 'hover'});
         });
     }
 
@@ -240,10 +249,16 @@ function setFontSize(calendar) {
     }
 }
 
+function openTaskModalByID(id) {
+    let task = $(`[data-id="${id}"]`)[0];
+    taskClickHandler({currentTarget: task});
+}
+
 // Event Handlers
 
 function taskClickHandler(event) {
-    event.stopPropagation();
+    if (event.target)
+        event.stopPropagation();
     let id = event.currentTarget.getAttribute("data-id");
     let name = event.currentTarget.getAttribute("data-name");
     let color = event.currentTarget.getAttribute("data-color");

@@ -3,7 +3,7 @@
     <div id="upcoming-task-container">
     {{#if tasks.length}}
         {{#each tasks}}
-        <div class="upcoming-task" style="color:{{this.colorFG}};background-color:{{this.colorHex}}">
+        <div class="upcoming-task" style="color:{{this.colorFG}};background-color:{{this.colorHex}}" onclick="openTaskModalByID('{{this.id}}')">
             <div class="upcoming-task-name">
                 <p><b>{{this.name}}</b></p>
             </div>

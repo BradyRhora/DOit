@@ -264,6 +264,10 @@ body {
     flex-wrap: nowrap;
 }
 
+.task-icons > * {
+    margin:3px;
+}
+
 .task .task-footer > * {
     margin: 0px;
 }
@@ -345,4 +349,8 @@ body {
     max-height: 300px;
     max-width: 300px;
     cursor: pointer;
+}
+
+.upcoming-task:hover {
+    opacity: 0.8;
 }

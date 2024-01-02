@@ -78,18 +78,77 @@ app.get('/', verifyToken, (req, res) => {
             };
         });
 
-        // get upcoming tasks (within 7 (8) days)
-        Task.find({ userID: req.userId, dueDateTime: { $gte:new Date(),$lte: new Date(Date.now() + 8 * 24 * 60 * 60 * 1000) } })
-        .lean().sort('dueDateTime')
-        .then(tasks => {
-            tasks = tasks.map(task => {                
+        let start = new Date();
+        let end = new Date(Date.now() + 8 * 24 * 60 * 60 * 1000)
+    
+        // get tasks between start and end
+        let promise_1 = Task.find({dueDateTime: {$gte: start, $lte: end}, userID: req.userId}).sort({dueDateTime: 1});
+
+        // get tasks that repeat
+        let promise_2 = Task.find({repeats: true, userID: req.userId, dueDateTime: {$lte: end}}).then(tasks => {
+            let repeatedTasks = [];
+            tasks.forEach(task => {
+                let repeatOptions = task.repeatOptions.toObject();
+                repeatOptions.originalDueDateTime = task.dueDateTime;
+                let firstDueDateTime = task.dueDateTime;
+                let repeatEnd = new Date(repeatOptions.endDate);
+                let startDate = new Date(start);
+                let endDate = new Date(end);
+
+                let multiplier;
+                switch (repeatOptions.unit) {
+                    case 'days':
+                        multiplier = 1000 * 60 * 60 * 24;
+                        break;
+                    case 'weeks':
+                        multiplier = 1000 * 60 * 60 * 24 * 7;
+                        break;
+                    case 'months':
+                        multiplier = 1000 * 60 * 60 * 24 * 30;
+                        break;
+                    case 'years':
+                        multiplier = 1000 * 60 * 60 * 24 * 365;
+                        break;
+                }
+
+                let gapInMilliseconds = repeatOptions.number * multiplier;
+                let nextDueDateTime = new Date(firstDueDateTime.getTime() + gapInMilliseconds);
+                
+                while (nextDueDateTime < startDate) {
+                    nextDueDateTime = new Date(nextDueDateTime.getTime() + gapInMilliseconds);
+                }
+
+                
+                while (nextDueDateTime <= repeatEnd && nextDueDateTime <= endDate) {
+                    repeatedTasks.push({
+                        name: task.name,
+                        _id: task._id,
+                        userID: task.userID,
+                        dueDateTime: nextDueDateTime,
+                        colorHex: task.colorHex,
+                        groupID: task.groupID,
+                        notes: task.notes,
+                        repeats: task.repeats,
+                        repeatOptions: repeatOptions
+                    });
+                    nextDueDateTime = new Date(nextDueDateTime.getTime() + gapInMilliseconds);
+                }
+                
+            });
+            return repeatedTasks;
+        });
+
+        // return all tasks
+        Promise.all([promise_1, promise_2]).then(values => {
+            let tasks = values[0].concat(values[1]);
+            tasks = tasks.map(task => {
                 let r = parseInt(task.colorHex.substr(1,2), 16);
                 let g = parseInt(task.colorHex.substr(3,2), 16);
                 let b = parseInt(task.colorHex.substr(5,2), 16);
 
                 let fg = ((r*0.299 + g*0.587 + b*0.114) > 140) ? '#000000' : '#FFFFFF';
 
-                return {
+                let taskData = {
                     id: task._id,
                     name: task.name,
                     colorHex: task.colorHex,
@@ -97,13 +156,23 @@ app.get('/', verifyToken, (req, res) => {
                     date: task.dueDateTime.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }),
                     time: task.dueDateTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric' }),
                     notes: task.notes,
-                    group: task.groupID
+                    group: task.groupID,
+                    completed: task.completed
                 };
+
+                return taskData;
+            })
+            .sort((a, b) => {
+                return a.dueDateTime - b.dueDateTime;
             });
 
             res.render('home', { groups: groups, upcomingTasks: tasks, publicVapidKey: env.VAPID_PUBLIC });
+        }).catch(error => {
+            console.error('[ERROR] Error getting upcoming tasks: ' + error);
+            res.status(500).send({ error: error });
         });
     }).catch(error => {
+        console.error('[ERROR] Error getting groups: ' + error);
         res.status(500).send({ error: error });
     });
 });
