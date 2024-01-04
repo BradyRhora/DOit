@@ -185,6 +185,7 @@ function checkNotifications() {
     .then(tasks => {
         tasks.forEach(task => {
             NotificationSubscription.find({ user: task.userID }).then(subscriptions => {
+                console.log(`[DEBUG] Found subscription for task '${task.name}'`);
                 subscriptions.forEach(subscription => {
                     const payload = JSON.stringify({
                         title: `${task.name} - ${task.dueDateTime.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' })}`,
@@ -201,7 +202,11 @@ function checkNotifications() {
                             console.error(error.stack);
                         }
                     }).then(() => {
-                        Task.findOneAndUpdate({ _id: task._id }, { notified: true }, { new: true });
+                        Task.findOneAndUpdate({ _id: task._id }, { notified: true }, { new: true }).then(task => {
+                            console.log(`[DEBUG] Notified user ${task.userID} about task ${task._id} for subscription ${subscription._id}`);
+                        }).catch(error => {
+                            console.error(error.stack);
+                        });
                     });
                 });
             }).catch(error => {
@@ -214,12 +219,15 @@ function checkNotifications() {
 }
 
 // Start task notifier
+// get the current amount of seconds passed in the minute
+let seconds = 60 - new Date().getSeconds();
+if (seconds < 3) seconds += 60;
 setTimeout(() => {
     checkNotifications();
     setInterval(() => {
         checkNotifications();
     }, 1000 * 60);
-}, 1000 * 3);
+}, 1000 * seconds);
 
 // Start the server
 const port = env.PORT;
