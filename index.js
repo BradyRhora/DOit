@@ -196,6 +196,7 @@ function checkNotifications() {
 
                     webpush.sendNotification(subscription, payload).catch(error => {
                         if (error.statusCode === 410) {
+                            console.log(`[DEBUG] Subscription ${subscription._id} has expired`);
                             NotificationSubscription.deleteOne({ endpoint: subscription.endpoint });
                         } else {
                             console.error(error.body);

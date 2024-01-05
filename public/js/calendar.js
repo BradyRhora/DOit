@@ -62,18 +62,7 @@ class Calendar {
                 day_elem.appendChild(task_container);
 
                 // Scroll event
-                day_elem.addEventListener("wheel", function(event) {
-                    event.preventDefault();
-
-                    let element = event.currentTarget;
-                    let taskContainer = element.children[1];
-
-                    if (taskContainer.scrollHeight > taskContainer.clientHeight) return;
-
-                    let scrollUp = event.deltaY < 0;
-                    let weekOffset = scrollUp ? -1 : 1;
-                    calendar.changeOffset(weekOffset);
-                }, { passive: false });
+                day_elem.addEventListener("wheel", dayScrollHandler, { passive: false });
 
                 this.calendar_body.appendChild(new_week);
             }
@@ -315,6 +304,19 @@ function taskClickHandler(event) {
     $("#modal-submit").html("Save Changes");
     $("#new-task-modal .modal-title").html("Edit Task");
     $("#new-task-modal #modal-delete").css("display", "block");
+}
+
+function dayScrollHandler(event) {
+
+    let element = event.currentTarget;
+    let taskContainer = element.children[1];
+
+    if (taskContainer.scrollHeight > taskContainer.clientHeight) return;
+    event.preventDefault();
+
+    let scrollUp = event.deltaY < 0;
+    let weekOffset = scrollUp ? -1 : 1;
+    calendar.changeOffset(weekOffset);    
 }
 
 function dayClickHandler(event) {    
