@@ -80,9 +80,13 @@ module.exports = function (app) {
                 while (nextDueDateTime < startDate) {
                     nextDueDateTime = new Date(nextDueDateTime.getTime() + gapInMilliseconds);
                 }
-
                 
                 while (nextDueDateTime <= repeatEnd && nextDueDateTime <= endDate) {
+                    //check for daylight savings changes
+                    if (nextDueDateTime.getHours() != firstDueDateTime.getHours()) {
+                        nextDueDateTime.setHours(firstDueDateTime.getHours());
+                    }
+
                     repeatedTasks.push({
                         name: task.name,
                         _id: task._id,
@@ -94,8 +98,18 @@ module.exports = function (app) {
                         repeats: task.repeats,
                         repeatOptions: repeatOptions
                     });
+
+                    if (task.name === 'GPU 621' && task.dueDateTime.getHours() == 11) {
+                        console.log('[DEBUG] nextDueDateTime.getTime(): ' + nextDueDateTime.getTime());
+                        console.log('[DEBUG] gapInMilliseconds: ' + gapInMilliseconds);
+                        console.log('new Date: ' + new Date(nextDueDateTime.getTime() + gapInMilliseconds));
+                    }
+
                     nextDueDateTime = new Date(nextDueDateTime.getTime() + gapInMilliseconds);
+                    
                 }
+
+                
                 
             });
             return repeatedTasks;

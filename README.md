@@ -16,5 +16,6 @@ Currently accessible on [my website](https://doit.bradysbytes.xyz).
 
 ## To-Do
 
-- [ ] Edit and delete groups
+- [ ] Group management menu
+- [ ] Individual task notifications
 - [ ] Improved mobile support

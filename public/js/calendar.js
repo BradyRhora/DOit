@@ -140,8 +140,20 @@ class Calendar {
                 let task_icon_container = document.createElement("div");
                 task_icon_container.classList.add("task-icons");
 
-                if (task.repeats)
-                    task_icon_container.innerHTML += `<i data-toggle="tooltip" data-bs-placement="bottom" title="Repeats every ${task.repeatOptions.number} ${task.repeatOptions.unit}" class="bi bi-arrow-repeat task-repeat-icon"></i>`;
+                if (task.repeats) {
+                    let count = task.repeatOptions.number;
+                    let unit = task.repeatOptions.unit;
+
+                    if (count == 1) {
+                        count = "every";
+                        unit = unit.substr(0, unit.length - 1);
+                    } else {
+                        count = `every ${count}`;
+                    }
+
+                    task_icon_container.innerHTML += `<i data-toggle="tooltip" data-bs-placement="bottom" title="Repeats ${count} ${task.repeatOptions.unit}" class="bi bi-arrow-repeat task-repeat-icon"></i>`;
+                }
+
                 if (task.notes.length > 0)
                     task_icon_container.innerHTML += `<i class="bi bi-card-text"></i>`;
 
