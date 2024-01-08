@@ -151,7 +151,7 @@ class Calendar {
                         count = `every ${count}`;
                     }
 
-                    task_icon_container.innerHTML += `<i data-toggle="tooltip" data-bs-placement="bottom" title="Repeats ${count} ${task.repeatOptions.unit}" class="bi bi-arrow-repeat task-repeat-icon"></i>`;
+                    task_icon_container.innerHTML += `<i data-toggle="tooltip" data-bs-placement="bottom" title="Repeats ${count} ${unit}" class="bi bi-arrow-repeat task-repeat-icon"></i>`;
                 }
 
                 if (task.notes.length > 0)
