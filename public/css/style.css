@@ -372,3 +372,7 @@ body {
 .upcoming-task:hover {
     opacity: 0.8;
 }
+
+.upcoming-task-notes {
+  max-width: 150px;
+}
