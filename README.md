@@ -19,10 +19,9 @@ Currently accessible on [my website](https://doit.bradysbytes.xyz).
 - [ ] Group management menu
 - [ ] Individual task notifications
 - [ ] Improved mobile support
+- [ ] Completions
 - [ ] Completions for repeated tasks
 
 ## Bugs
 
-- [ ] Some tasks that repeat will not have the correct date/time after some repeats
 - [ ] Repeating tasks don't work without end dates
-- [ ] Repeat task conversion from "X Times" to "Ends on" not accurate
