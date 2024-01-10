@@ -1,5 +1,6 @@
 const verifyToken = require('../auth')
 const Task = require('../models/task');
+const moment = require('moment');
 
 module.exports = function (app) {
     app.get('/api/task/:id', verifyToken, (req, res) => {
@@ -53,64 +54,32 @@ module.exports = function (app) {
             tasks.forEach(task => {
                 let repeatOptions = task.repeatOptions.toObject();
                 repeatOptions.originalDueDateTime = task.dueDateTime;
-                let firstDueDateTime = task.dueDateTime;
-                let repeatEnd = new Date(repeatOptions.endDate);
-                let startDate = new Date(start);
-                let endDate = new Date(end);
+                let repeatEnd = moment(repeatOptions.endDate);
+                let startDate = moment(start);
+                let endDate = moment(end);
 
-                let multiplier;
-                switch (repeatOptions.unit) {
-                    case 'days':
-                        multiplier = 1000 * 60 * 60 * 24;
-                        break;
-                    case 'weeks':
-                        multiplier = 1000 * 60 * 60 * 24 * 7;
-                        break;
-                    case 'months':
-                        multiplier = 1000 * 60 * 60 * 24 * 30;
-                        break;
-                    case 'years':
-                        multiplier = 1000 * 60 * 60 * 24 * 365;
-                        break;
-                }
+                let nextDueDateTime = moment(repeatOptions.originalDueDateTime).add(repeatOptions.number, repeatOptions.unit);
 
-                let gapInMilliseconds = repeatOptions.number * multiplier;
-                let nextDueDateTime = new Date(firstDueDateTime.getTime() + gapInMilliseconds);
-                
-                while (nextDueDateTime < startDate) {
-                    nextDueDateTime = new Date(nextDueDateTime.getTime() + gapInMilliseconds);
+                while (nextDueDateTime.isBefore(startDate)) {
+                    nextDueDateTime.add(repeatOptions.number, repeatOptions.unit);
                 }
                 
-                while (nextDueDateTime <= repeatEnd && nextDueDateTime <= endDate) {
-                    //check for daylight savings changes
-                    if (nextDueDateTime.getHours() != firstDueDateTime.getHours()) {
-                        nextDueDateTime.setHours(firstDueDateTime.getHours());
-                    }
-
+                while (nextDueDateTime.isSameOrBefore(repeatEnd) && nextDueDateTime.isSameOrBefore(endDate)) {
                     repeatedTasks.push({
                         name: task.name,
                         _id: task._id,
                         userID: task.userID,
-                        dueDateTime: nextDueDateTime,
+                        dueDateTime: nextDueDateTime.toDate(),
                         colorHex: task.colorHex,
                         groupID: task.groupID,
                         notes: task.notes,
+                        completed: task.completed,
                         repeats: task.repeats,
                         repeatOptions: repeatOptions
                     });
 
-                    if (task.name === 'GPU 621' && task.dueDateTime.getHours() == 11) {
-                        console.log('[DEBUG] nextDueDateTime.getTime(): ' + nextDueDateTime.getTime());
-                        console.log('[DEBUG] gapInMilliseconds: ' + gapInMilliseconds);
-                        console.log('new Date: ' + new Date(nextDueDateTime.getTime() + gapInMilliseconds));
-                    }
-
-                    nextDueDateTime = new Date(nextDueDateTime.getTime() + gapInMilliseconds);
-                    
+                    nextDueDateTime.add(repeatOptions.number, repeatOptions.unit);               
                 }
-
-                
-                
             });
             return repeatedTasks;
         });

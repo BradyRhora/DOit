@@ -185,31 +185,33 @@ function checkNotifications() {
     .then(tasks => {
         tasks.forEach(task => {
             NotificationSubscription.find({ user: task.userID }).then(subscriptions => {
-                console.log(`[DEBUG] Found subscription for task '${task.name}'`);
-                subscriptions.forEach(subscription => {
-                    const payload = JSON.stringify({
-                        title: `${task.name} - ${task.dueDateTime.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' })}`,
-                        body: task.notes,
-                        icon: 'android-chrome-256x256.png',
-                        id: task._id,
-                    });
+                const payload = JSON.stringify({
+                    title: `${task.name} - ${task.dueDateTime.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' })}`,
+                    body: task.notes,
+                    icon: 'android-chrome-256x256.png',
+                    id: task._id,
+                });
 
-                    webpush.sendNotification(subscription, payload).catch(error => {
+                const notificationPromises = subscriptions.map(subscription => {
+                    return webpush.sendNotification(subscription, payload).catch(error => {
                         if (error.statusCode === 410) {
-                            console.log(`[DEBUG] Subscription ${subscription._id} has expired`);
-                            NotificationSubscription.deleteOne({ endpoint: subscription.endpoint });
+                            console.log('Subscription has expired or is no longer valid: ' + subscription.endpoint)
+                            NotificationSubscription.deleteOne({ endpoint: subscription.endpoint }).exec()
+                            .catch(error => console.error('Failed to delete subscription: ' + error.stack));
+                            throw error; // Throw the error to reject the promise
                         } else {
                             console.error(error.body);
                             console.error(error.stack);
                         }
-                    }).then(() => {
-                        Task.findOneAndUpdate({ _id: task._id }, { notified: true }, { new: true }).then(task => {
-                            console.log(`[DEBUG] Notified user ${task.userID} about task ${task._id} for subscription ${subscription._id}`);
-                        }).catch(error => {
-                            console.error(error.stack);
-                        });
                     });
                 });
+
+                return Promise.all(notificationPromises.filter(p => p !== undefined)) // Filter out undefined promises
+                    .then(() => {
+                        return Task.findOneAndUpdate({ _id: task._id }, { notified: true }, { new: true }); // Update the task after all notifications have been sent
+                    }).catch(error => {
+                        console.error('Error while notifying user: ' + error.stack);
+                    });
             }).catch(error => {
                 console.error(error.stack);
             });

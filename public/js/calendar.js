@@ -82,14 +82,15 @@ class Calendar {
                 day.element.children[1].innerHTML = "";
             }
 
+            let today = new Date();
             // add new tasks
             for (var task of data) {
                 let date = new Date(task.dueDateTime);
-                let pastDate = new Date() > date;
+                let pastDate = today > date;
                 let day = calendar.getDayElementByDate(date);
 
                 // Elements no longer exist because of scroll
-                if (!day) return;
+                if (!day) continue;
 
                 let task_elem = document.createElement("div");
 
@@ -166,7 +167,7 @@ class Calendar {
                 `;
 
 
-
+                // Set foreground color to black or white based on background color
                 task_elem.style.backgroundColor = task.colorHex;
 
                 let r = parseInt(task.colorHex.substr(1,2), 16);
@@ -531,16 +532,20 @@ $(document).ready(function() {
 
             if (ending) {
                 let endType = $("#task-repeating-end-option").val();
+                let endTime = moment('1970-01-01 ' + $("#task-time").val());
                 let endDate;
 
                 if (endType == "on-date") {
-                    endDate = $("#task-repeating-end-date").val();
+                    endDate = moment($("#task-repeating-end-date").val()).toDate();
                 } else {
                     let times = $("#task-repeating-end-number").val();
                     times *= repeatNumber;
 
-                    endDate = moment(date).add(times, repeatUnit).format("YYYY-MM-DD");
+                    endDate = moment(date).add(times - 1, repeatUnit).toDate();
                 }
+
+                endDate.setHours(endTime.hours());
+                endDate.setMinutes(endTime.minutes());
 
                 task.repeatOptions.endDate = endDate;
             }
