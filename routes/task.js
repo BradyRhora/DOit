@@ -54,7 +54,7 @@ module.exports = function (app) {
             tasks.forEach(task => {
                 let repeatOptions = task.repeatOptions.toObject();
                 repeatOptions.originalDueDateTime = task.dueDateTime;
-                let repeatEnd = moment(repeatOptions.endDate);
+                let repeatEnd = moment(repeatOptions.endDate || end);
                 let startDate = moment(start);
                 let endDate = moment(end);
 
