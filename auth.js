@@ -27,7 +27,9 @@ function verifyToken(req, res, next) {
     if (!token) return res.status(403).send('No token provided');
 
     jwt.verify(token, secret, (err, decoded) => {
-        if (err) return res.status(500).send('Failed to authenticate token');
+        if (err) {
+            return res.redirect('/login');
+        }
         req.userId = decoded.id;
 
         // Apply rate limits

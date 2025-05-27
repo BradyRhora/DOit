@@ -81,6 +81,7 @@ app.get('/', verifyToken, (req, res) => {
         let start = new Date();
         let end = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
     
+        
         // get tasks between start and end
         let promise_1 = Task.find({dueDateTime: {$gte: start, $lte: end}, userID: req.userId}).sort({dueDateTime: 1});
 
@@ -163,9 +164,11 @@ app.get('/', verifyToken, (req, res) => {
                 return taskData;
             })
             .sort((a, b) => {
-                return a.dueDateTime - b.dueDateTime;
+                let dateA = new Date(a.date + ' ' + a.time);
+                let dateB = new Date(b.date + ' ' + b.time);
+                return dateA - dateB;
             });
-
+            
             res.render('home', { groups: groups, upcomingTasks: tasks, publicVapidKey: env.VAPID_PUBLIC });
         }).catch(error => {
             console.error('[ERROR] Error getting upcoming tasks: ' + error);
