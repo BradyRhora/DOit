@@ -4,7 +4,7 @@ This is a small web application to track tasks and important dates and easily vi
 
 Built using Express, Node.js, and MongoDB.
 
-Currently accessible on [my website](https://doit.bradysbytes.xyz).
+Currently accessible on [my website](https://doit.bradysbytes.dev).
 
 ## Features
 
@@ -17,11 +17,6 @@ Currently accessible on [my website](https://doit.bradysbytes.xyz).
 ## To-Do
 
 - [ ] Group management menu
-- [ ] Individual task notifications
+- [ ] Specific task push notifications
 - [ ] Improved mobile support
-- [ ] Completions
-- [ ] Completions for repeated tasks
-
-## Bugs
-
-- [ ] Repeating tasks don't work without end dates
+- [ ] Mark tasks as complete
