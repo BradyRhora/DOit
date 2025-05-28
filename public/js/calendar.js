@@ -418,6 +418,7 @@ function toggleEndingOptions() {
 
 function toggleEndType() {
     let type = $("#task-repeating-end-option").val();
+    if (!$("#task-repeating-end-checkbox").is(":checked")) type = ""; // If task doesn't end, ensure inputs not required
 
     let datePicker = $("#task-repeating-end-date");
     let number = $("#task-repeating-end-number-container");
