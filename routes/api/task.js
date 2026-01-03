@@ -1,5 +1,5 @@
-const verifyToken = require('../auth')
-const Task = require('../models/task');
+const verifyToken = require('../../auth')
+const Task = require('../../models/task');
 const moment = require('moment');
 
 module.exports = function (app) {

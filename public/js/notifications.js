@@ -7,13 +7,13 @@ function setNotificationButtonState(state) {
 
     if (state === 'granted') {
         icon.removeClass('bi-bell').addClass('bi-bell-fill');
-        button.attr('data-bs-original-title', 'Use your browser settings to disable notifications.');
+        button.attr('data-bs-original-title', 'Use your browser settings to disable notifications'); // TODO: Automate?
     } else if (state === 'denied') {
         icon.removeClass('bi-bell-fill').addClass('bi-bell-slash-fill');
-        button.attr('data-bs-original-title', 'Subscribe to notifications.');
+        button.attr('data-bs-original-title', 'Subscribe to notifications');
     } else {
         icon.removeClass('bi-bell-slash-fill').addClass('bi-bell');
-        button.attr('data-bs-original-title', 'Subscribe to notifications.');
+        button.attr('data-bs-original-title', 'Subscribe to notifications');
     }
 }
 

@@ -1,3 +1,8 @@
 {{> header text="Check out your schedule"}}
-{{> calendar}}
+{{> calendar userExtensions=extensions}}
 {{> upcoming tasks=upcomingTasks}}
+
+<!-- Extensions -->
+{{#if extensions.thingTracker}}
+    <h1>TRACKING: THINGS!</h1>
+{{/if}}

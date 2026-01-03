@@ -357,6 +357,7 @@ function dayClickHandler(event) {
     $("#task-group-select").val("");
     
     $("#new-task-modal").modal("show");
+    
     $('#task-name').focus();
     $("#task-date").val(moment(date).format('yyyy-MM-DD'));
     $("#modal-submit").html("Save Task");
@@ -378,6 +379,7 @@ function deleteTaskClickHandler(event) {
 }
 
 // Modal Functions
+
 function verifyNumInput(elem) {
     elem = $(elem);
     let val = Number(elem.val());
@@ -455,6 +457,50 @@ function clearTaskForm() {
     toggleEndType();
 }
 
+function initializeExtensionCheckStates() {
+    for (userExtension of userExtensionsJSON) {
+        $('[di-extension-id="'+userExtension.extensionId+'"]').prop('checked', userExtension.enabled);
+    }
+}
+
+function retrieveExtensions() {
+    $.get("/api/extension", function(extensions) {
+        let extensionElements = extensions.map((ext) => {
+            return `
+            <tr>
+                <td><b>${ext.name}</b></td>
+                <td>${ext.description}</td>
+                <td><input type="checkbox" di-extension-id="${ext._id}" class="extension-toggler"></input></td>
+            </tr>
+            `;
+        })
+
+        let tableBody = $("#extension-table-body");
+        tableBody.empty();
+        tableBody.append(extensionElements.join("\n"));
+        initializeExtensionCheckStates();
+    });
+}
+
+function openExtensionsModal() {
+    retrieveExtensions();
+    $("#extension-menu-modal").modal("show");
+}
+
+function extensionCheckboxToggled() {
+    const newState = this.checked;
+    const eId = $(this).attr('di-extension-id');
+    
+    fetch("/api/user/extension", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({extensionId: eId, state: newState})
+    }).then(response => {
+        console.log(response);
+    });
+}
 
 var calendar, currentDay;
 $(document).ready(function() {
@@ -489,7 +535,8 @@ $(document).ready(function() {
             $("#task-color").val($("#task-group-select option:selected").attr("color"));
         }
     });
-
+    $(document).on("click", "#extension-menu-button", openExtensionsModal);
+    $(document).on("click", ".extension-toggler", extensionCheckboxToggled);
 
     // on resize
     $(window).resize(function() {

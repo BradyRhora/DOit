@@ -2,9 +2,11 @@ const express = require('express');
 const exphbs = require('express-handlebars');
 const env = require('dotenv').config().parsed;
 const verifyToken = require('./auth');
+const moment = require('moment');
 
 const Group = require('./models/group');
 const Task = require('./models/task');
+const {Extension, UserExtensionState} = require('./models/extension');
 
 
 const mongoose = require('mongoose');
@@ -45,11 +47,10 @@ app.use(require('cookie-parser')())
 // Set up static files middleware
 app.use(express.static('public'));
 
-
 // Routes
-require('./routes/user')(app);
-require('./routes/task')(app);
-require('./routes/group')(app);
+require('./routes/views')(app);
+require('./routes/api')(app);
+require('./routes/api')(app);
 
 app.post('/subscribe', verifyToken, (req, res) => {
     console.log("[DEBUG] User subscribing: " + req.userId);
@@ -143,11 +144,11 @@ app.get('/', verifyToken, (req, res) => {
         Promise.all([promise_1, promise_2]).then(values => {
             let tasks = values[0].concat(values[1]);
             tasks = tasks.map(task => {
-                let r = parseInt(task.colorHex.substr(1,2), 16);
-                let g = parseInt(task.colorHex.substr(3,2), 16);
-                let b = parseInt(task.colorHex.substr(5,2), 16);
+                let r = parseInt(task.colorHex.substring(1,3), 16);
+                let g = parseInt(task.colorHex.substring(3,5), 16);
+                let b = parseInt(task.colorHex.substring(5,7), 16);
 
-                let fg = ((r*0.299 + g*0.587 + b*0.114) > 140) ? '#000000' : '#FFFFFF';
+                let fg = ((r*0.299 + g*0.587 + b*0.114) > 140) ? '#000000' : '#FFFFFF'; // TODO: probably should do this in client
 
                 let taskData = {
                     id: task._id,
@@ -169,9 +170,28 @@ app.get('/', verifyToken, (req, res) => {
                 return dateA - dateB;
             });
             
-            res.render('home', { groups: groups, upcomingTasks: tasks, publicVapidKey: env.VAPID_PUBLIC });
+            Extension.find().lean().then((extensions) => {
+                UserExtensionState.find({userID: new mongoose.Types.ObjectId(req.userId)}).lean()
+                .then((extensions) => {
+                    return extensions.map(es => {
+                        return {
+                            "extensionId": es.extensionID,
+                            "enabled": es.enabled
+                        }
+                    });
+                })
+                .then((extensions) => {
+                    res.render('home', { 
+                        groups: groups,
+                        upcomingTasks: tasks,
+                        extensions: JSON.stringify(extensions),
+                        publicVapidKey: env.VAPID_PUBLIC 
+                    });
+                });
+            });
+
         }).catch(error => {
-            console.error('[ERROR] Error getting upcoming tasks: ' + error);
+            console.error('[ERROR] Error getting upcoming tasks: ', error, error.stack);
             res.status(500).send({ error: error });
         });
     }).catch(error => {
@@ -239,4 +259,6 @@ setTimeout(() => {
 const port = env.PORT;
 app.listen(port, () => {
     console.log(`Server started on port ${port}`);
+}).on('error', (err) => {
+    console.error(error);
 });

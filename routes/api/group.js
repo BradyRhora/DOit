@@ -1,5 +1,5 @@
-const verifyToken = require('../auth');
-const Group = require('../models/group');
+const verifyToken = require('../../auth');
+const Group = require('../../models/group');
 
 module.exports = (app) => {
     app.post('/api/group', verifyToken, (req, res) => {

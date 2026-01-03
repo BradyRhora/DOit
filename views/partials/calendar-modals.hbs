@@ -139,3 +139,34 @@
 		</div>
 	</div>
 </div>
+
+<div id="extension-menu-modal" class="modal" tabindex="-1" role="dialog">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Extensions</h5>
+			</div>
+			<div class="modal-body">
+				<table>
+					<thead>
+						<tr>
+							<th>Extension</th>
+							<th>Description</th>
+							<th>Enabled</th>
+						</tr>
+					</thead>
+					<tbody id="extension-table-body">
+						<!-- Auto filled in calendar.js -->
+					</tbody>
+				</table>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	var userExtensionsJSON = {{{userExtensions}}}
+</script>

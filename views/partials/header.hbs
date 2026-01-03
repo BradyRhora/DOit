@@ -2,12 +2,17 @@
     <div id="icon-text">
         <a href="/"><img src="/android-chrome-192x192.png"/></a>
         <h3>{{text}}</h3>
+        <!--
         <div style="display: none" id="header-warning">
             <i class="bi bi-exclamation-triangle-fill"></i>
             <p id="header-warning-message" data-toggle="tooltip" data-bs-placement="bottom" data-bs-original-title="The bjsa.space domain will no longer be accessible in February. Please switch to <a href='https://doit.bradysbytes.xyz'>doit.bradysbytes.xyz</a>!">Alert!</p>
         </div>
+        -->
     </div>
     <div id="header-button-menu">
+        <button id="extension-menu-button" class="btn btn-primary" data-toggle="tooltip" data-bs-original-title="Extensions">
+            <i id="extension-menu-button-icon" class="bi bi-puzzle-fill"></i>
+        </button>
         <button id="allow-push-notifications" class="btn btn-primary" onclick="allowPushNotifications()">
             <i id="notification-allowed-icon" class="bi bi-bell"></i>
         </button>

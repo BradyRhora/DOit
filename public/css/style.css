@@ -1,3 +1,5 @@
+/* Disgustingly Messy. TODO: CLEAN!!! */
+
 :root{
     --cal-font-size: 1.5rem;
     --bg-vals: 39, 38, 43;
@@ -24,31 +26,15 @@ body {
     box-sizing: border-box;
 }
 
-@media (max-width: 768px) {
-    #icon-text h3 {
-        font-size: 1rem !important;
-    }
-    
-    #icon-text img {
-        padding: 10px !important;
-    }
+.modal th, .modal td {
+    border-collapse: collapse;
+    border: 1px solid var(--fg);
+    background-color:#1b1b1b;
+    text-align: center;
+}
 
-    #header-button-menu > * {
-        font-size:0.75rem !important;
-    }
-
-    .cal-day .task-container {
-        height: 120px !important;
-    }
-
-    .upcoming-task {
-        margin:2px !important;
-        padding: 5px !important;
-    }
-
-    #cal-fade-out {
-        height: 80px !important;
-    }
+.modal td {
+    padding:10px;
 }
 
 #header{
@@ -160,19 +146,6 @@ body {
     margin-bottom:0px;
     border-bottom: 1px solid var(--fg);
     text-align: center;
-}
-
-@media (max-width: 768px) {
-    .cal-day h4 {
-        height: 2.8rem;
-    }
-
-}
-
-@media (hover: hover) {
-    .cal-day:hover {
-        background-color: var(--hover-bg);
-    }
 }
 
 #calendar #weekdays {
@@ -375,4 +348,55 @@ body {
 
 .upcoming-task-notes {
   max-width: 150px;
+}
+
+@media (hover: hover) {
+    .cal-day:hover {
+        background-color: var(--hover-bg);
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        padding:0px;
+    }
+
+    #icon-text h3 {
+        font-size: 1rem !important;
+    }
+    
+    #icon-text img {
+        padding: 10px !important;
+    }
+
+    #header-button-menu > * {
+        font-size:0.75rem !important;
+    }
+
+    .cal-day .task-container {
+        height: 120px !important;
+    }
+
+    .upcoming-task {
+        margin:2px !important;
+        padding: 5px !important;
+    }
+
+    #cal-fade-out {
+        height: 80px !important;
+    }
+
+    
+    .cal-day h4 {
+        height: 2.8rem;
+    }
+
+    .task {
+        padding: 0px !important;
+        font-size: 0.8rem;
+    }
+
+    .task-container{
+        padding: 0px !important;
+    }
 }

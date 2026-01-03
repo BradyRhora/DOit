@@ -21,5 +21,12 @@
 </head>
 <body>
     {{{body}}}
+
+    <script>
+        // Global tooltip initialization
+        $(document).ready(function() {
+            $('[data-toggle="tooltip"]').tooltip({trigger: 'hover', placement: 'auto'});
+        });
+    </script>
 </body>
 </html>

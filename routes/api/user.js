@@ -1,17 +1,15 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const saltRounds = 10;
+const verifyToken = require('../../auth');
 
 const env = require('dotenv').config().parsed;
 const secret = env.SECRET;
 
-const User = require('../models/user');
+const User = require('../../models/user');
+const {ensureExtensionExists, createOrUpdateUserExtensionState, Extension} = require("../../models/extension");
 
 module.exports = function(app) {
-    app.get('/register', (req, res) => {
-        res.render('register');
-    });
-
     app.post('/api/register', async (req, res) => {
         const email = req.body.email;
         const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
@@ -33,10 +31,6 @@ module.exports = function(app) {
         });
     });
 
-    app.get('/login', (req, res) => {
-        res.render('login');
-    });
-
     app.post('/api/login', async (req, res) => {
         User.findOne({ email: req.body.email }).then(user => {
             bcrypt.compare(req.body.password, user.hash).then(passwordIsValid => {
@@ -50,8 +44,21 @@ module.exports = function(app) {
         });
     });
 
-    app.post('/logout', (req, res) => {
-        res.clearCookie('token');
-        res.sendStatus(200);
+    app.post('/api/user/extension', verifyToken, async (req, res) => {
+        var data = req.body;
+        const extensionId = data.extensionId;
+        const state = data.state;
+
+        if (extensionId && state != null) {
+            if (ensureExtensionExists(extensionId)) {
+                var success = createOrUpdateUserExtensionState(req.userId, extensionId, state);
+                if (success) res.sendStatus(200);
+                else res.sendStatus(500);
+            } else {
+                res.sendStatus(400);
+            }
+        } else {
+            res.sendStatus(400);
+        }
     });
 };
