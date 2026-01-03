@@ -1,4 +1,4 @@
-const verifyToken = require('../../auth')
+const verifyToken = require('../../scripts/auth')
 const Task = require('../../models/task');
 const moment = require('moment');
 

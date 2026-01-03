@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const saltRounds = 10;
-const verifyToken = require('../../auth');
+const verifyToken = require('../../scripts/auth');
 
 const env = require('dotenv').config().parsed;
 const secret = env.SECRET;

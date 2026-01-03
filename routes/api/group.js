@@ -1,4 +1,4 @@
-const verifyToken = require('../../auth');
+const verifyToken = require('../../scripts/auth');
 const Group = require('../../models/group');
 
 module.exports = (app) => {
