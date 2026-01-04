@@ -44,4 +44,15 @@ async function createOrUpdateUserExtensionState(userId, extensionId, state) {
     return res.acknowledged;
 }
 
-module.exports = {Extension, UserExtensionState, ensureExtensionExists, createOrUpdateUserExtensionState};
+async function getUserExtensionStates(userId) {
+    const res = await UserExtensionState.find({userID: new mongoose.Types.ObjectId(userId)}).lean();
+    return res;
+}
+
+module.exports = {
+    Extension,
+    UserExtensionState,
+    ensureExtensionExists,
+    createOrUpdateUserExtensionState,
+    getUserExtensionStates
+};

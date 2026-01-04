@@ -7,7 +7,7 @@ const env = require('dotenv').config().parsed;
 const secret = env.SECRET;
 
 const User = require('../../models/user');
-const {ensureExtensionExists, createOrUpdateUserExtensionState, Extension} = require("../../models/extension");
+const {ensureExtensionExists, createOrUpdateUserExtensionState, getUserExtensionStates, Extension, UserExtensionState} = require("../../models/extension");
 
 module.exports = function(app) {
     app.post('/api/register', async (req, res) => {
@@ -42,6 +42,14 @@ module.exports = function(app) {
                 res.redirect('/');
             });
         });
+    });
+
+    app.get('/api/user/extensions', verifyToken, async (req, res) => {
+        getUserExtensionStates(req.userId)
+        .then(states => {
+            res.send(states);
+        })
+
     });
 
     app.post('/api/user/extension', verifyToken, async (req, res) => {

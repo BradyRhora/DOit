@@ -128,23 +128,22 @@ module.exports = (app) => {
                     return dateA - dateB;
                 });
                 
-                Extension.find().lean().then((extensions) => {
-                    UserExtensionState.find({userID: new mongoose.Types.ObjectId(req.userId)}).lean()
-                    .then((extensions) => {
-                        return extensions.map(es => {
-                            return {
-                                "extensionId": es.extensionID,
-                                "enabled": es.enabled
-                            }
-                        });
-                    })
-                    .then((extensions) => {
-                        res.render('home', { 
-                            groups: groups,
-                            upcomingTasks: tasks,
-                            extensions: JSON.stringify(extensions),
-                            publicVapidKey: env.VAPID_PUBLIC 
-                        });
+                UserExtensionState.find({userID: new mongoose.Types.ObjectId(req.userId)}).lean()
+                .then((extensions) => {
+                    return extensions.reduce((acc, es) => {
+                    acc[`e_${es.extensionID}`] = {
+                        extensionId: es.extensionID,
+                        enabled: es.enabled
+                    };
+                    return acc;
+                    }, {});
+                })
+                .then((extensions) => {
+                    res.render('home', { 
+                        groups: groups,
+                        upcomingTasks: tasks,
+                        extensions: extensions,
+                        publicVapidKey: env.VAPID_PUBLIC 
                     });
                 });
 
@@ -202,7 +201,7 @@ module.exports = (app) => {
         });
     }
 
-    // Start task notifier
+    // Start task notifier right on the minute
     // get the current amount of seconds passed in the minute
     let seconds = 60 - new Date().getSeconds();
     if (seconds < 3) seconds += 60;

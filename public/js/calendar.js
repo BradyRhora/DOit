@@ -338,8 +338,12 @@ function dayClickHandler(event) {
     var date;
     if (event.currentTarget.id == "new-task")
         date = new Date();
-    else 
-        date = calendar.getDateByDayNumber(event.currentTarget.children[0].innerHTML);
+    else {
+        let dayNumberText = event.currentTarget.children[0].innerHTML;
+        const re = /[a-zA-Z ]/g;
+        dayNumberText = dayNumberText.replaceAll(re, "");
+        date = calendar.getDateByDayNumber(dayNumberText);
+    }
     
 
     $("#task-form").removeAttr("data-id");
@@ -457,10 +461,12 @@ function clearTaskForm() {
     toggleEndType();
 }
 
-function initializeExtensionCheckStates() {
-    for (userExtension of userExtensionsJSON) {
-        $('[di-extension-id="'+userExtension.extensionId+'"]').prop('checked', userExtension.enabled);
-    }
+function initializeExtensionCheckStates() {    
+    $.get("/api/user/extensions", function(extensions) {
+        for (userExtension of extensions) {
+            $('[di-extension-id="'+userExtension.extensionID+'"]').prop('checked', userExtension.enabled);
+        }
+    });
 }
 
 function retrieveExtensions() {
@@ -487,6 +493,7 @@ function openExtensionsModal() {
     $("#extension-menu-modal").modal("show");
 }
 
+var refreshButtonVisible = false;
 function extensionCheckboxToggled() {
     const newState = this.checked;
     const eId = $(this).attr('di-extension-id');
@@ -498,7 +505,10 @@ function extensionCheckboxToggled() {
         },
         body: JSON.stringify({extensionId: eId, state: newState})
     }).then(response => {
-        console.log(response);
+        if (response.status == 200 && refreshButtonVisible == false) {
+            refreshButtonVisible = true;
+            $("#extensionRefreshPageButton").css("display", "block");
+        }
     });
 }
 
