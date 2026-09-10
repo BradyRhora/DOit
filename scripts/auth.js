@@ -1,4 +1,4 @@
-const jwt = require('jsonwebtoken');
+const { verify } = require('jsonwebtoken');
 const rateLimit = require('express-rate-limit');
 const env = require('dotenv').config().parsed;
 const secret = env.SECRET;
@@ -26,7 +26,7 @@ function verifyToken(req, res, next) {
     const token = req.cookies.token;
     if (!token) return res.status(403).send('No token provided');
 
-    jwt.verify(token, secret, (err, decoded) => {
+    verify(token, secret, (err, decoded) => {
         if (err) {
             return res.redirect('/login');
         }

@@ -4,6 +4,11 @@ module.exports = function(app) {
     });
 
     app.get('/login', (req, res) => {
+        if (req.cookies.token) {
+            res.redirect('/');
+            return;
+        }
+        
         res.render('login');
     });
 

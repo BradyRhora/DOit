@@ -1,6 +1,6 @@
 <div class="container">
     <h2>Login</h2>
-    <form action="/api/login" method="post">
+    <form id="loginForm">
         <div class="form-group">
             <label for="email">Email address:</label>
             <input type="email" class="form-control" id="email" name="email">
@@ -15,8 +15,12 @@
        </div>
     </form>
 
+    <div id="error-message" class="alert alert-danger" style="display:none; margin-top:10px;"></div>
+
     <div id="about">
         <p>DOit is a simple task management app that allows you to create, edit, and delete calendar items to track events and deadlines, without any bloat.</p>
         <img src="/images/doit.png" alt="Screenshot of DOit app">
     </div>
 </div>
+
+<script src="/js/pages/login.js"/>

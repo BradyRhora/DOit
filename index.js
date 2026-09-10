@@ -43,7 +43,7 @@ require('./routes/api')(app);
 // Start the server
 const port = env.PORT;
 app.listen(port, () => {
-    console.log(`Server started on port ${port}`);
+    console.log(`Server started on port ${port} - http://localhost:${port}`);
 }).on('error', (err) => {
     console.error(error);
 });

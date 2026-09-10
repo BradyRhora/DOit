@@ -1,0 +1,43 @@
+@media (max-width: 768px) {
+    body {
+        padding:0px;
+    }
+
+    #icon-text h3 {
+        font-size: 1rem !important;
+    }
+    
+    #icon-text img {
+        padding: 10px !important;
+    }
+
+    #header-button-menu > * {
+        font-size:0.75rem !important;
+    }
+
+    .cal-day .task-container {
+        height: 120px !important;
+    }
+
+    .upcoming-task {
+        margin:2px !important;
+        padding: 5px !important;
+    }
+
+    #cal-fade-out {
+        height: 80px !important;
+    }
+
+    .cal-day h4 {
+        height: 2.8rem;
+    }
+
+    .task {
+        padding: 0px !important;
+        font-size: 0.8rem;
+    }
+
+    .task-container{
+        padding: 0px !important;
+    }
+}

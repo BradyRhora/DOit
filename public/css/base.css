@@ -1,0 +1,87 @@
+:root{
+    --cal-font-size: 1.5rem;
+    --bg-vals: 39, 38, 43;
+    
+    --bg: rgb(var(--bg-vals));
+    --hover-bg: #4a4a4a;
+
+    --past-day-bg: #3a3a3a;
+    --past-day-hover-bg: #3f3f3f;
+
+    --current-day-bg: #a7b477;
+    --current-day-hover-bg: #b5c780;
+
+    --fg: #f0f0f0;
+    --sec: rgb(57, 56, 63);
+}
+
+body {
+    color: var(--fg);
+    padding:20px;
+    background-color: var(--bg);
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+}
+
+.modal th, .modal td {
+    border-collapse: collapse;
+    border: 1px solid var(--fg);
+    background-color:#1b1b1b;
+    text-align: center;
+}
+
+.modal td {
+    padding:10px;
+}
+
+#header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+#header-warning {
+    background-color: yellow;
+    border-radius: 5px;
+    color:red;
+    display: flex;
+    padding:5px;
+    margin-left:10px;
+}
+
+#header-warning > * {
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+#header-warning > p {
+    text-decoration: dotted underline;
+}
+
+#icon-text {
+    display: flex;
+    align-items: center;
+}
+
+#icon-text img {
+    width: 50px;
+    padding:5px;
+    cursor: pointer;
+}
+
+#icon-text h3 {
+    margin-bottom:0px;
+}
+
+#about {
+    margin-top:20px;
+}
+
+#about > img {
+    border: 8px solid var(--fg);
+    border-radius: 30px;
+    box-shadow: 0 80px 80px 30px rgba(0,0,0,0.5);
+    width: 100%;
+}
